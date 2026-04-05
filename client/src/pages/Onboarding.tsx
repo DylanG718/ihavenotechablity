@@ -999,23 +999,22 @@ export default function Onboarding() {
   }, []);
 
   const finish = useCallback((path: OnboardingPath) => {
-    const archetype = state.archetypeChosen ?? undefined;
-    markOnboardingComplete(archetype);
+    const archetype = state.archetypeChosen ?? 'RUNNER';
+    // markOnboardingComplete is now async — fire and don't await (optimistic)
+    markOnboardingComplete(archetype, path, false);
     Analytics.onboardingCompleted?.(player.id, path);
     if (path === 'founder') {
       Analytics.founderOnboardingCompleted?.(player.id);
-      navigate('/');  // → dashboard (now onboarding is marked complete, routing will work)
-    } else {
-      navigate('/');
     }
+    navigate('/');
   }, [navigate, player.id, state.archetypeChosen, markOnboardingComplete]);
 
   const skip = useCallback(() => {
-    // Mark complete even on skip — prevents redirect loop
-    markOnboardingComplete();
+    // Mark complete even on skip — prevents redirect loop back to onboarding
+    markOnboardingComplete('RUNNER', 'standard', true);
     Analytics.onboardingAbandoned?.(player.id, currentStep);
     navigate('/');
-  }, [navigate, player.id, currentStep]);
+  }, [navigate, player.id, currentStep, markOnboardingComplete]);
 
   function switchToFounderPath() {
     Analytics.familyCreationPathChosen?.(player.id);
