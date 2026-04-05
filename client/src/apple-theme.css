@@ -1,0 +1,938 @@
+/* ══════════════════════════════════════════════════════════════
+   MAFIALIFE — APPLE-INSPIRED THEME
+   Font: Helvetica Now Display
+   Mode: Dark (macOS-style dark background — chosen for game atmosphere)
+   ══════════════════════════════════════════════════════════════
+
+   SWAP FILE: swap this import in index.css to change the full
+   visual identity. All component class names remain stable.
+   Touch only this file + the --token variables to retheme.
+
+   ── DESIGN SYSTEM ──────────────────────────────────────────────
+   Spacing scale (8px base):  4 / 8 / 12 / 16 / 24 / 32 / 48
+   Type scale:   10 / 12 / 13 / 15 / 17 / 20 / 28 / 36
+   Radius:       6px (card) / 10px (modal) / 99px (pill)
+   Shadows:      subtle inset + single soft drop shadow
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────
+   FONT-FACE — Helvetica Now Display
+   ───────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/HelveticaNowDisplay-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Font ─────────────────────────────────── */
+  --font-ui: 'Helvetica Now Display', -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+
+  /* ── Palette: Deep dark — not muddy grey ──── */
+  --bg-base:       #0a0a0f;   /* near-black with blue undertone */
+  --bg-elevated:   #111118;   /* cards, panels */
+  --bg-overlay:    #18181f;   /* secondary surfaces */
+  --bg-subtle:     #1c1c26;   /* hover states, alt rows */
+  --bg-input:      #16161e;   /* input fields */
+
+  /* Borders — barely visible, not heavy */
+  --border-strong: rgba(255,255,255,0.10);
+  --border-subtle: rgba(255,255,255,0.055);
+  --border-faint:  rgba(255,255,255,0.03);
+
+  /* ── Type colours ─────────────────────────── */
+  --text-primary:   #f0f0f5;   /* headings, key values */
+  --text-secondary: #9898a6;   /* labels, descriptions */
+  --text-tertiary:  #5c5c70;   /* disabled, hints */
+  --text-inverse:   #0a0a0f;
+
+  /* ── Accent — 4 semantic colours ─────────── */
+  /* Danger / action (the "red" brand) */
+  --accent-red:      #e0453a;
+  --accent-red-dim:  rgba(224, 69, 58, 0.14);
+  --accent-red-border: rgba(224, 69, 58, 0.30);
+
+  /* Success / ok */
+  --accent-green:      #30d158;
+  --accent-green-dim:  rgba(48, 209, 88, 0.12);
+  --accent-green-border: rgba(48, 209, 88, 0.28);
+
+  /* Warning */
+  --accent-amber:      #ffd60a;
+  --accent-amber-dim:  rgba(255, 214, 10, 0.12);
+  --accent-amber-border: rgba(255, 214, 10, 0.28);
+
+  /* Info / blue */
+  --accent-blue:      #0a84ff;
+  --accent-blue-dim:  rgba(10, 132, 255, 0.13);
+  --accent-blue-border: rgba(10, 132, 255, 0.28);
+
+  /* Gold / cash (game-specific brand) */
+  --accent-gold:      #f5c842;
+  --accent-gold-dim:  rgba(245, 200, 66, 0.12);
+
+  /* Purple / blacksite */
+  --accent-purple:    #bf5af2;
+  --accent-purple-dim: rgba(191, 90, 242, 0.13);
+
+  /* ── Spacing scale ────────────────────────── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* ── Type scale ───────────────────────────── */
+  --text-xs:    10px;
+  --text-sm:    12px;
+  --text-base:  13px;
+  --text-md:    15px;
+  --text-lg:    17px;
+  --text-xl:    20px;
+  --text-2xl:   26px;
+  --text-3xl:   34px;
+
+  /* ── Radius ───────────────────────────────── */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+  --radius-pill: 999px;
+
+  /* ── Shadows ──────────────────────────────── */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px var(--border-subtle);
+  --shadow-elevated: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px var(--border-strong);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,0.7), 0 0 0 1px var(--border-strong);
+
+  /* ── Transitions ──────────────────────────── */
+  --transition: 0.15s ease;
+
+  /* ─── shadcn/tailwind compatibility vars ──── */
+  --background:        10 5% 4%;
+  --foreground:        240 10% 95%;
+  --card:              240 8% 7%;
+  --card-foreground:   240 10% 95%;
+  --popover:           240 8% 7%;
+  --popover-foreground: 240 10% 95%;
+  --primary:           4 73% 55%;
+  --primary-foreground: 0 0% 100%;
+  --secondary:         240 6% 10%;
+  --secondary-foreground: 240 5% 60%;
+  --muted:             240 6% 10%;
+  --muted-foreground:  240 5% 60%;
+  --accent:            4 73% 55%;
+  --accent-foreground: 0 0% 100%;
+  --destructive:       4 73% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border:            240 6% 14%;
+  --input:             240 6% 9%;
+  --ring:              4 73% 55%;
+  --radius:            6px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   RESET & BASE
+   ───────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  /* Round corners everywhere — Apple feel */
+  border-radius: var(--radius-sm);
+}
+
+/* Hard overrides for legacy inline radius=0 styles */
+.panel, .panel-header, .badge, .btn, .game-input,
+input, textarea, select, .stat-bar-track {
+  border-radius: var(--radius-sm) !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-base) !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  background-color: var(--bg-base) !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.01em !important;
+}
+
+a {
+  color: var(--accent-red);
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+a:hover { opacity: 0.75; text-decoration: none; }
+
+::selection {
+  background: var(--accent-red-dim);
+  color: var(--text-primary);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+/* ─────────────────────────────────────────────────────────────
+   LAYOUT — AppShell
+   ───────────────────────────────────────────────────────────── */
+
+/* Top bar */
+.ml-topbar {
+  background: rgba(10, 10, 15, 0.85) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  padding: 0 var(--sp-4) !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 30 !important;
+}
+
+.ml-topbar-logo {
+  font-size: var(--text-lg) !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.03em !important;
+  font-family: var(--font-ui) !important;
+}
+
+.ml-topbar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: var(--sp-3) !important;
+  font-size: var(--text-sm) !important;
+  color: var(--text-secondary) !important;
+  font-family: var(--font-ui) !important;
+}
+
+/* Hamburger */
+.ml-menu-toggle {
+  display: none !important;
+  background: none !important;
+  border: none !important;
+  color: var(--accent-red) !important;
+  cursor: pointer !important;
+  padding: var(--sp-2) !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  border-radius: var(--radius-sm) !important;
+  transition: background var(--transition) !important;
+}
+.ml-menu-toggle:hover { background: var(--bg-subtle) !important; }
+
+/* Overlay */
+.ml-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(2px);
+  z-index: 39;
+}
+
+/* Page wrapper */
+.ml-page-wrapper {
+  width: 100% !important;
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+  min-height: calc(100vh - 44px) !important;
+  display: flex !important;
+  background: var(--bg-base) !important;
+}
+
+/* Sidebar */
+.ml-sidebar {
+  width: 220px !important;
+  flex-shrink: 0 !important;
+  background: var(--bg-base) !important;
+  border-right: 1px solid var(--border-subtle) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-y: auto !important;
+  max-height: calc(100vh - 44px) !important;
+  position: sticky !important;
+  top: 44px !important;
+  align-self: flex-start !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Main content */
+.ml-main {
+  flex: 1 !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  padding: var(--sp-5) var(--sp-6) !important;
+}
+
+/* Bottom nav — hidden on desktop */
+.ml-bottom-nav { display: none !important; }
+
+/* ─────────────────────────────────────────────────────────────
+   SIDEBAR INTERNALS
+   ───────────────────────────────────────────────────────────── */
+
+/* Player info block */
+.classic-player-block,
+.classic-logo-wrap {
+  padding: var(--sp-4) var(--sp-4) var(--sp-3) !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  background: transparent !important;
+}
+
+.classic-logo-title,
+.ml-topbar-logo {
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-md) !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.03em !important;
+}
+
+.classic-player-block .player-alias {
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  font-size: var(--text-base) !important;
+  font-family: var(--font-ui) !important;
+}
+
+.classic-player-block .player-role {
+  color: var(--accent-red) !important;
+  font-size: var(--text-sm) !important;
+  font-weight: 500 !important;
+  font-family: var(--font-ui) !important;
+  margin-top: 2px !important;
+}
+
+.classic-player-block .player-cash {
+  color: var(--accent-gold) !important;
+  font-size: var(--text-sm) !important;
+  font-weight: 500 !important;
+  font-family: var(--font-ui) !important;
+  margin-top: var(--sp-1) !important;
+}
+
+/* Nav section headings */
+.classic-nav-section,
+.nav-section-label {
+  font-family: var(--font-ui) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--text-tertiary) !important;
+  padding: var(--sp-4) var(--sp-4) var(--sp-1) !important;
+  border-top: none !important;
+  margin-top: 0 !important;
+}
+
+/* Nav links */
+.classic-nav-link,
+.nav-item {
+  display: flex !important;
+  align-items: center !important;
+  padding: 7px var(--sp-4) !important;
+  font-size: var(--text-sm) !important;
+  font-weight: 400 !important;
+  color: var(--text-secondary) !important;
+  cursor: pointer !important;
+  font-family: var(--font-ui) !important;
+  border-left: none !important;
+  border-radius: 0 !important;
+  transition: background var(--transition), color var(--transition) !important;
+  margin: 1px var(--sp-2) !important;
+  border-radius: var(--radius-sm) !important;
+}
+
+.classic-nav-link:hover,
+.nav-item:hover {
+  background: var(--bg-subtle) !important;
+  color: var(--text-primary) !important;
+  text-decoration: none !important;
+}
+
+.classic-nav-link.active,
+.nav-item.active {
+  background: var(--accent-red-dim) !important;
+  color: var(--accent-red) !important;
+  font-weight: 600 !important;
+  border-left: none !important;
+  padding-left: var(--sp-4) !important;
+}
+
+/* Role switcher */
+.classic-role-switcher {
+  padding: var(--sp-3) var(--sp-4) !important;
+  border-top: 1px solid var(--border-subtle) !important;
+  font-size: var(--text-xs) !important;
+  color: var(--text-tertiary) !important;
+  font-family: var(--font-ui) !important;
+  background: transparent !important;
+  margin-top: auto !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PANELS / CARDS
+   ───────────────────────────────────────────────────────────── */
+
+.panel {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-card) !important;
+  overflow: hidden !important;
+  margin-bottom: var(--sp-3) !important;
+}
+
+.panel-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-faint) !important;
+  padding: var(--sp-3) var(--sp-4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-family: var(--font-ui) !important;
+  border-radius: 0 !important;
+}
+
+.panel-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: var(--text-secondary) !important;
+  font-family: var(--font-ui) !important;
+}
+
+/* Summary card — hero stat display */
+.summary-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-5) var(--sp-6);
+  margin-bottom: var(--sp-4);
+}
+
+/* Section groupings */
+.section-title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--text-tertiary) !important;
+  padding: var(--sp-5) 0 var(--sp-2) !important;
+  font-family: var(--font-ui) !important;
+  border-bottom: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PAGE HEADERS
+   ───────────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-ui) !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* PageHeader component title */
+h1.classic-page-title,
+.retro-page-title,
+[style*="color: #ffcc33"][style*="font-weight: bold"],
+[style*="color: \'#ffcc33\'"] {
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-xl) !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* Override inline h1 styles in PageHeader */
+.ml-main h1 {
+  font-size: var(--text-xl) !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.03em !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: var(--sp-1) !important;
+  font-family: var(--font-ui) !important;
+}
+
+.classic-page-sub,
+.retro-page-subtitle {
+  font-size: var(--text-sm) !important;
+  color: var(--text-secondary) !important;
+  font-style: normal !important;
+  font-family: var(--font-ui) !important;
+  margin-top: 0 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   STAT DISPLAY
+   ───────────────────────────────────────────────────────────── */
+
+.stat-val {
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-xl) !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  letter-spacing: -0.03em !important;
+}
+
+.label-caps {
+  font-family: var(--font-ui) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  color: var(--text-tertiary) !important;
+}
+
+/* Semantic status colours */
+.text-cash    { color: var(--accent-gold) !important; }
+.text-heat    { color: var(--accent-amber) !important; }
+.text-danger  { color: var(--accent-red) !important; }
+.text-success { color: var(--accent-green) !important; }
+.text-warn    { color: var(--accent-amber) !important; }
+
+/* ─────────────────────────────────────────────────────────────
+   BUTTONS — Apple-style filled/tonal/ghost
+   ───────────────────────────────────────────────────────────── */
+
+.btn {
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-sm) !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-sm) !important;
+  cursor: pointer !important;
+  padding: 7px var(--sp-3) !important;
+  border: none !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.01em !important;
+  transition: opacity var(--transition), background var(--transition) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+}
+
+.btn:disabled { opacity: 0.35 !important; cursor: not-allowed !important; }
+.btn:hover:not(:disabled) { opacity: 0.85 !important; }
+
+/* Primary — filled red */
+.btn-primary {
+  background: var(--accent-red) !important;
+  color: #fff !important;
+  border: none !important;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-red) !important;
+  opacity: 0.85 !important;
+  color: #fff !important;
+}
+
+/* Ghost — transparent with border */
+.btn-ghost {
+  background: var(--bg-overlay) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-strong) !important;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--bg-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Danger — filled deep red */
+.btn-danger {
+  background: var(--accent-red-dim) !important;
+  color: var(--accent-red) !important;
+  border: 1px solid var(--accent-red-border) !important;
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--accent-red) !important;
+  color: #fff !important;
+}
+
+/* Success — filled green */
+.btn-success {
+  background: var(--accent-green-dim) !important;
+  color: var(--accent-green) !important;
+  border: 1px solid var(--accent-green-border) !important;
+}
+.btn-success:hover:not(:disabled) {
+  background: var(--accent-green) !important;
+  color: #fff !important;
+}
+
+/* Override the active tab state (btn-primary used for tabs) */
+button.btn-primary[class] {
+  background: var(--accent-red) !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   INPUTS
+   ───────────────────────────────────────────────────────────── */
+
+.game-input,
+input:not([type="checkbox"]):not([type="radio"]),
+textarea, select {
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-sm) !important;
+  font-weight: 400 !important;
+  border-radius: var(--radius-sm) !important;
+  background: var(--bg-input) !important;
+  border: 1px solid var(--border-strong) !important;
+  color: var(--text-primary) !important;
+  padding: 8px var(--sp-3) !important;
+  transition: border-color var(--transition), box-shadow var(--transition) !important;
+  outline: none !important;
+}
+
+.game-input:focus,
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-red) !important;
+  box-shadow: 0 0 0 3px var(--accent-red-dim) !important;
+  outline: none !important;
+}
+
+/* Checkboxes — native look */
+input[type="checkbox"] { accent-color: var(--accent-red); }
+
+/* ─────────────────────────────────────────────────────────────
+   BADGES — Pill style
+   ───────────────────────────────────────────────────────────── */
+
+.badge {
+  font-family: var(--font-ui) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  border-radius: var(--radius-pill) !important;
+  padding: 2px 8px !important;
+  border: 1px solid !important;
+  line-height: 1.4 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.badge-green  {
+  background: var(--accent-green-dim) !important;
+  color: var(--accent-green) !important;
+  border-color: var(--accent-green-border) !important;
+}
+.badge-red    {
+  background: var(--accent-red-dim) !important;
+  color: var(--accent-red) !important;
+  border-color: var(--accent-red-border) !important;
+}
+.badge-yellow {
+  background: var(--accent-amber-dim) !important;
+  color: var(--accent-amber) !important;
+  border-color: var(--accent-amber-border) !important;
+}
+.badge-gold   {
+  background: var(--accent-gold-dim) !important;
+  color: var(--accent-gold) !important;
+  border-color: rgba(245,200,66,0.28) !important;
+}
+.badge-blue   {
+  background: var(--accent-blue-dim) !important;
+  color: var(--accent-blue) !important;
+  border-color: var(--accent-blue-border) !important;
+}
+.badge-purple {
+  background: var(--accent-purple-dim) !important;
+  color: var(--accent-purple) !important;
+  border-color: rgba(191,90,242,0.28) !important;
+}
+.badge-gray   {
+  background: rgba(255,255,255,0.06) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-strong) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TABLES
+   ───────────────────────────────────────────────────────────── */
+
+.data-table {
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-sm) !important;
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+.data-table th {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  padding: var(--sp-2) var(--sp-3) !important;
+  text-align: left !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--text-tertiary) !important;
+  white-space: nowrap !important;
+}
+
+.data-table td {
+  border: none !important;
+  border-bottom: 1px solid var(--border-faint) !important;
+  padding: var(--sp-2) var(--sp-3) !important;
+  color: var(--text-primary) !important;
+  font-size: var(--text-sm) !important;
+  vertical-align: middle !important;
+}
+
+.data-table tr:last-child td { border-bottom: none !important; }
+
+.data-table tr:nth-child(even) td {
+  background: transparent !important; /* remove zebra — Apple doesn't use it */
+}
+
+.data-table tr:hover td {
+  background: var(--bg-subtle) !important;
+  cursor: pointer !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ALERTS / INFO BANNERS
+   ───────────────────────────────────────────────────────────── */
+
+/* Override inline InfoAlert styles */
+[style*="background: #1a1500"],
+[style*="background: #1a0808"],
+[style*="background: #15091a"],
+[style*="background: \"#1a1500\""],
+[style*="background: \"#1a0808\""] {
+  border-radius: var(--radius-sm) !important;
+  font-family: var(--font-ui) !important;
+  font-size: var(--text-sm) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   STAT BARS
+   ───────────────────────────────────────────────────────────── */
+
+.stat-bar-track {
+  background: var(--bg-subtle) !important;
+  border: none !important;
+  height: 4px !important;
+  border-radius: var(--radius-pill) !important;
+}
+
+.stat-bar-fill { border-radius: var(--radius-pill) !important; }
+
+/* Generic progress bar wrappers used inline */
+[style*="height: '8px'"],
+[style*="height: 8px"] {
+  border-radius: var(--radius-pill) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TIER COLOURS
+   ───────────────────────────────────────────────────────────── */
+
+.tier-STARTER  { color: var(--text-tertiary) !important; }
+.tier-STANDARD { color: var(--accent-blue) !important; }
+.tier-ADVANCED { color: var(--accent-amber) !important; }
+.tier-ELITE    { color: var(--accent-red) !important; }
+
+/* ─────────────────────────────────────────────────────────────
+   MODALS
+   ───────────────────────────────────────────────────────────── */
+
+/* Overlay backdrop */
+.ml-modal-overlay,
+[style*="position: fixed"][style*="rgba(0,0,0,0.88)"],
+[style*="position: fixed"][style*="rgba(0,0,0,0.9)"] {
+  background: rgba(0,0,0,0.72) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* Modal panel */
+.ml-modal-overlay .panel,
+[style*="position: fixed"] > .panel {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-modal) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FORM GROUPS & LABELS
+   ───────────────────────────────────────────────────────────── */
+
+label {
+  font-family: var(--font-ui) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--text-secondary) !important;
+  margin-bottom: var(--sp-1) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BOTTOM NAV (mobile) — Apple tab bar style
+   ───────────────────────────────────────────────────────────── */
+
+.ml-bottom-nav {
+  background: rgba(10, 10, 15, 0.88) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  border-top: 1px solid var(--border-subtle) !important;
+  height: 56px !important;
+}
+
+.ml-bottom-nav-inner {
+  max-width: 1100px !important;
+  height: 100% !important;
+  display: flex !important;
+}
+
+.ml-bottom-nav-item {
+  color: var(--text-tertiary) !important;
+  font-family: var(--font-ui) !important;
+  font-size: 9px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  gap: 3px !important;
+  transition: color var(--transition) !important;
+  min-height: unset !important;
+  padding: 6px 4px !important;
+}
+
+.ml-bottom-nav-item.active { color: var(--accent-red) !important; }
+.ml-bottom-nav-item svg { width: 22px !important; height: 22px !important; }
+
+/* ─────────────────────────────────────────────────────────────
+   ARCHETYPE SELECT PAGE
+   ───────────────────────────────────────────────────────────── */
+
+.archetype-card {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-md) !important;
+  transition: border-color var(--transition), background var(--transition) !important;
+}
+
+.archetype-card:hover {
+  border-color: var(--border-strong) !important;
+  background: var(--bg-overlay) !important;
+}
+
+.archetype-card.selected {
+  border-color: var(--accent-red) !important;
+  background: var(--accent-red-dim) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LIST ITEMS
+   ───────────────────────────────────────────────────────────── */
+
+.list-item {
+  padding: var(--sp-3) 0 !important;
+  border-bottom: 1px solid var(--border-faint) !important;
+}
+
+.list-item:last-child { border-bottom: none !important; }
+
+.list-item-title {
+  font-weight: 600 !important;
+  font-size: var(--text-sm) !important;
+  font-family: var(--font-ui) !important;
+  color: var(--text-primary) !important;
+}
+
+.list-item-sub {
+  font-size: var(--text-xs) !important;
+  color: var(--text-tertiary) !important;
+  font-family: var(--font-ui) !important;
+  margin-top: 2px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MISC COLOUR UTILITIES
+   ───────────────────────────────────────────────────────────── */
+
+.bg-green-600  { background-color: var(--accent-green) !important; }
+.bg-yellow-600 { background-color: var(--accent-amber) !important; }
+.bg-red-600    { background-color: var(--accent-red) !important; }
+
+/* Common inline colour overrides to hit game-specific styles */
+[style*="#ffcc33"] { color: var(--accent-gold) !important; }
+[style*="color: '#ffcc33'"] { color: var(--accent-gold) !important; }
+
+/* Spinner */
+.spinner {
+  border: 2px solid var(--border-strong) !important;
+  border-top-color: var(--accent-red) !important;
+  border-radius: 50% !important;
+}

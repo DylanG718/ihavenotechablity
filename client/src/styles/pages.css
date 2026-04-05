@@ -1,0 +1,1193 @@
+/* ══════════════════════════════════════════════
+   MAFIALIFE — Mobile-First Page Styles
+   pages.css — imported after mobile.css in index.css
+   All new structural layout classes live here.
+   Color palette: #0a0a0f bg, #cc3333 red, #ffcc33 gold
+   Border-radius: 6px to match existing --radius token
+   Min touch targets: 48px for interactive items
+══════════════════════════════════════════════ */
+
+/* ── Page Stack ──────────────────────────────
+   Main page container — centered, max-width responsive
+   Replaces raw <div> wrappers on each page
+──────────────────────────────────────────── */
+
+.page-stack {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (min-width: 769px) {
+  .page-stack {
+    max-width: 900px;
+  }
+}
+
+/* ── Hero Card ───────────────────────────────
+   Top-of-page identity summary (player or family)
+──────────────────────────────────────────── */
+
+.hero-card {
+  background: #111318;
+  border: 1px solid #1e1e28;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.hero-card__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 10px;
+}
+
+.hero-card__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #0a0a0f;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.1);
+}
+
+.hero-card__identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.hero-card__alias {
+  font-size: 15px;
+  font-weight: bold;
+  color: #e8e8e8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.hero-card__username {
+  font-size: 11px;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-card__badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.hero-card__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid #1e1e28;
+}
+
+.hero-card__stat {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-right: 1px solid #1e1e28;
+}
+
+.hero-card__stat:last-child {
+  border-right: none;
+}
+
+.hero-card__stat-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.hero-card__stat-val {
+  font-size: 13px;
+  font-weight: bold;
+  color: #e0e0e0;
+  tabular-nums: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Next Action Card ────────────────────────
+   Prominent gold CTA for the #1 suggestion
+──────────────────────────────────────────── */
+
+.next-action-card {
+  background: #0f0e00;
+  border: 1px solid #2a2500;
+  border-left: 3px solid #ffcc33;
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.next-action-card__label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #887700;
+}
+
+.next-action-card__title {
+  font-size: 13px;
+  color: #e8e0a0;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.next-action-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255, 204, 51, 0.12);
+  border: 1px solid rgba(255, 204, 51, 0.3);
+  color: #ffcc33;
+  cursor: pointer;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.15s;
+  align-self: flex-start;
+}
+
+.next-action-card__cta:hover {
+  background: rgba(255, 204, 51, 0.22);
+}
+
+/* ── Info Strip ──────────────────────────────
+   Single-line status strip: jail, war, event
+──────────────────────────────────────────── */
+
+.info-strip {
+  padding: 7px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  border: 1px solid;
+}
+
+.info-strip--danger {
+  background: #1a0808;
+  border-color: #3a1010;
+  color: #cc3333;
+}
+
+.info-strip--warn {
+  background: #1a1500;
+  border-color: #3a2a00;
+  color: #cc9900;
+}
+
+.info-strip--success {
+  background: #0a1a0a;
+  border-color: #1a3a1a;
+  color: #4a9a4a;
+}
+
+/* ── Card Section ────────────────────────────
+   Reusable section with optional heading
+──────────────────────────────────────────── */
+
+.card-section {
+  background: var(--card, #111318);
+  border: 1px solid var(--border, #1e1e1e);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.card-section__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border, #1e1e1e);
+  background: rgba(255,255,255,0.02);
+}
+
+.card-section__heading-text {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.card-section__heading-right {
+  font-size: 10px;
+  color: #555;
+}
+
+.card-section__body {
+  padding: 12px;
+}
+
+/* ── Bottom Sheet ────────────────────────────
+   Slide-up overlay on mobile, centered modal on desktop
+──────────────────────────────────────────── */
+
+.bottom-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: flex-end;
+  justify-content: stretch;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.bottom-sheet.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.bottom-sheet__panel {
+  width: 100%;
+  background: #111318;
+  border: 1px solid #1e1e28;
+  border-top: 2px solid #cc3333;
+  border-radius: 12px 12px 0 0;
+  max-height: 92vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.bottom-sheet.open .bottom-sheet__panel {
+  transform: translateY(0);
+}
+
+@media (min-width: 769px) {
+  .bottom-sheet {
+    align-items: center;
+    justify-content: center;
+  }
+  .bottom-sheet__panel {
+    width: 480px;
+    border-radius: 6px;
+    border-top: 1px solid #1e1e28;
+    transform: translateY(20px);
+    max-height: 80vh;
+  }
+  .bottom-sheet.open .bottom-sheet__panel {
+    transform: translateY(0);
+  }
+}
+
+/* ── Chip Bar ────────────────────────────────
+   Horizontal scrollable filter bar
+──────────────────────────────────────────── */
+
+.chip-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  /* Hide scrollbar */
+  scrollbar-width: none;
+}
+
+.chip-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.chip-bar--tabs {
+  border-bottom: 1px solid #1e1e1e;
+  gap: 0;
+  padding-bottom: 0;
+  margin-bottom: 12px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #252525;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-radius: 20px;
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  min-height: 36px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.chip:hover {
+  color: #aaa;
+  border-color: #383838;
+}
+
+.chip.active {
+  background: rgba(204, 51, 51, 0.12);
+  border-color: rgba(204, 51, 51, 0.4);
+  color: #cc3333;
+}
+
+/* Tab-style chips */
+.chip-bar--tabs .chip {
+  border-radius: 0;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  min-height: 40px;
+}
+
+.chip-bar--tabs .chip.active {
+  background: transparent;
+  border-bottom-color: #cc3333;
+  color: #e0e0e0;
+}
+
+.chip-separator {
+  width: 1px;
+  background: #252525;
+  margin: 0 2px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+/* ── Job Card ────────────────────────────────
+   Reworked job list item layout
+──────────────────────────────────────────── */
+
+.job-card {
+  background: #111318;
+  border: 1px solid #1e1e1e;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.job-card--locked {
+  opacity: 0.6;
+}
+
+.job-card__inner {
+  padding: 12px 14px;
+  border-left: 3px solid transparent;
+}
+
+.job-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.job-card__name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #e0e0e0;
+  line-height: 1.2;
+}
+
+.job-card__reward {
+  font-size: 13px;
+  font-weight: bold;
+  color: #ffcc33;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.job-card__tagline {
+  font-size: 11px;
+  color: #555;
+  font-style: italic;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.job-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.job-card__chip {
+  font-size: 9px;
+  padding: 1px 6px;
+  border: 1px solid;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.job-card__meta {
+  font-size: 11px;
+  color: #555;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.job-card__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.job-card__cta {
+  display: flex;
+  gap: 6px;
+}
+
+.job-card__cta-btn {
+  flex: 1;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid;
+  transition: background 0.12s;
+}
+
+.job-card__hitman-banner {
+  margin: 8px 0 0;
+  padding: 6px 10px;
+  background: #0d1020;
+  border: 1px solid #1e2840;
+  border-radius: 3px;
+  font-size: 10px;
+  color: #5580bb;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Role Slot ───────────────────────────────
+   Business role assignment row
+──────────────────────────────────────────── */
+
+.role-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #1a1a1a;
+  min-height: 48px;
+}
+
+.role-slot:last-child {
+  border-bottom: none;
+}
+
+.role-slot__left {
+  flex: 1;
+  min-width: 0;
+}
+
+.role-slot__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ccc;
+  margin-bottom: 2px;
+}
+
+.role-slot__subtitle {
+  font-size: 10px;
+  color: #555;
+}
+
+.role-slot__player {
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.role-slot.vacant .role-slot__player {
+  color: #444;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.role-slot__actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Member Row ──────────────────────────────
+   Compact family member list item
+──────────────────────────────────────────── */
+
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #1a1a1a;
+  min-height: 48px;
+}
+
+.member-row:last-child {
+  border-bottom: none;
+}
+
+.member-row__rank {
+  flex-shrink: 0;
+}
+
+.member-row__name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e0e0e0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-row__meta {
+  font-size: 11px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.member-row__role {
+  font-size: 10px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+/* ── Turf Item ───────────────────────────────
+   District/turf list item
+──────────────────────────────────────────── */
+
+.turf-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid #1a1a1a;
+  min-height: 48px;
+}
+
+.turf-item:last-child {
+  border-bottom: none;
+}
+
+.turf-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.turf-item__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.turf-item__owner {
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.turf-item__meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  color: #555;
+}
+
+/* ── Desktop Two Column ──────────────────────
+   2-column layout on wide screens
+──────────────────────────────────────────── */
+
+.desktop-two-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.desktop-two-col__main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.desktop-two-col__side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+@media (min-width: 769px) {
+  .desktop-two-col {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .desktop-two-col__main {
+    flex: 3;
+  }
+  .desktop-two-col__side {
+    flex: 2;
+    position: sticky;
+    top: 44px;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+}
+
+/* ── Compact Cards ───────────────────────────
+   Shared base for dashboard mini-cards
+──────────────────────────────────────────── */
+
+.compact-card {
+  background: #111318;
+  border: 1px solid #1e1e28;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.compact-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-bottom: 1px solid #1e1e28;
+  background: rgba(255,255,255,0.02);
+}
+
+.compact-card__title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.compact-card__badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(204,51,51,0.15);
+  border: 1px solid rgba(204,51,51,0.3);
+  color: #cc3333;
+}
+
+.compact-card__body {
+  padding: 10px 12px;
+}
+
+.compact-card__link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 7px 12px;
+  border-top: 1px solid #1a1a1a;
+  font-size: 10px;
+  color: #cc3333;
+  text-decoration: none;
+  transition: color 0.12s;
+}
+
+.compact-card__link:hover {
+  color: #e04444;
+}
+
+/* ── Stat Strip ──────────────────────────────
+   4-col quick-stat grid (for family hero)
+──────────────────────────────────────────── */
+
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid #1e1e28;
+}
+
+.stat-strip__item {
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-right: 1px solid #1e1e28;
+  text-align: center;
+}
+
+.stat-strip__item:last-child {
+  border-right: none;
+}
+
+.stat-strip__label {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #444;
+}
+
+.stat-strip__val {
+  font-size: 12px;
+  font-weight: bold;
+  color: #ccc;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Summary Bar ─────────────────────────────
+   Horizontal quick-stat bar (world, turf, etc.)
+──────────────────────────────────────────── */
+
+.summary-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.summary-bar__item {
+  background: #111318;
+  border: 1px solid #1e1e28;
+  border-radius: 6px;
+  padding: 7px 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.summary-bar__label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #555;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.summary-bar__val {
+  font-size: 13px;
+  font-weight: bold;
+  color: #e0e0e0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
+/* In summary-bar, label-caps and stat-val also need to respect overflow */
+.summary-bar__item .label-caps {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.summary-bar__item .stat-val {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Family Hero Card ────────────────────────
+   Large family identity header card
+──────────────────────────────────────────── */
+
+.family-hero-card {
+  background: #111318;
+  border: 1px solid #1e1e28;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.family-hero-card__top {
+  padding: 14px 16px 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.family-hero-card__name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffcc33;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.family-hero-card__name--atwar {
+  color: #cc3333;
+}
+
+.family-hero-card__motto {
+  font-size: 11px;
+  color: #666;
+  font-style: italic;
+}
+
+.family-hero-card__badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* ── Boss Controls Strip ─────────────────────
+   Horizontally scrollable boss action buttons
+──────────────────────────────────────────── */
+
+.boss-strip {
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #1e1e28;
+  padding: 8px 12px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.boss-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.boss-strip .btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 36px;
+  font-size: 10px;
+}
+
+/* ── Overview Tab Cards ──────────────────────
+   Grid of 4 small stat cards for overview
+──────────────────────────────────────────── */
+
+.overview-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* ── Activity Feed ───────────────────────────
+   Compact event list items
+──────────────────────────────────────────── */
+
+.feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.feed-item:last-child {
+  border-bottom: none;
+}
+
+.feed-item__icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  margin-top: 1px;
+}
+
+.feed-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.feed-item__text {
+  font-size: 11px;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+.feed-item__time {
+  font-size: 9px;
+  color: #444;
+  margin-top: 2px;
+}
+
+/* ── Page Header (enhanced) ──────────────────
+   Keep the existing PageHeader but add page-stack compat
+──────────────────────────────────────────── */
+
+.page-header {
+  margin-bottom: 10px;
+}
+
+/* ── District / World Card ───────────────────
+   District collapsible card
+──────────────────────────────────────────── */
+
+.district-card {
+  background: #111318;
+  border: 1px solid #1e1e28;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.district-card__header {
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  user-select: none;
+}
+
+.district-card__header:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+.district-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.district-card__name {
+  font-size: 13px;
+  font-weight: bold;
+  color: #e0e0e0;
+}
+
+.district-card__tagline {
+  font-size: 10px;
+  color: #555;
+  font-style: italic;
+}
+
+.district-card__right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.district-card__controller {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.district-card__stats-row {
+  display: flex;
+  gap: 12px;
+  padding: 7px 14px;
+  border-top: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  flex-wrap: wrap;
+  background: rgba(0,0,0,0.2);
+}
+
+.district-card__stat {
+  font-size: 10px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.district-card__stat-val {
+  color: #aaa;
+  font-weight: 600;
+}
+
+.district-card__expand-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 10px;
+  color: #5580bb;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-weight: 600;
+}
+
+.district-card__expand-btn:hover {
+  color: #7799cc;
+}
+
+/* ── Turf Row (inline expand) ────────────────
+   Turf rows inside expanded district card
+──────────────────────────────────────────── */
+
+.turf-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  border-top: 1px solid #111;
+  min-height: 48px;
+}
+
+.turf-row__left {
+  flex: 1;
+  min-width: 0;
+}
+
+.turf-row__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ccc;
+  margin-bottom: 2px;
+}
+
+.turf-row__meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 9px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.turf-row__fronts {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.turf-row__right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.turf-row__owner {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.turf-row__quality {
+  font-size: 9px;
+  color: #444;
+  margin-top: 2px;
+}
+
+/* ── Influence bar ───────────────────────────
+   Thin progress bar for family influence
+──────────────────────────────────────────── */
+
+.influence-bar {
+  margin-bottom: 6px;
+}
+
+.influence-bar__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.influence-bar__family {
+  font-size: 10px;
+  color: #aaa;
+}
+
+.influence-bar__score {
+  font-size: 10px;
+  color: #666;
+}
+
+.influence-bar__track {
+  height: 4px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.influence-bar__fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+/* ── Mobile tweaks for pages ─────────────────
+   Specific mobile overrides for new classes
+──────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .hero-card__alias {
+    font-size: 13px;
+  }
+  .hero-card__stat-val {
+    font-size: 11px;
+  }
+  .family-hero-card__name {
+    font-size: 15px;
+  }
+  .job-card__name {
+    font-size: 13px;
+  }
+  .job-card__cta-btn {
+    min-height: 44px;
+    font-size: 10px;
+  }
+  .stat-strip__val {
+    font-size: 11px;
+  }
+  .stat-strip__label {
+    font-size: 7px;
+  }
+}

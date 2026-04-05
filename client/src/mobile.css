@@ -1,0 +1,729 @@
+/* ══════════════════════════════════════════════
+   MOBILE RESPONSIVE OVERRIDES
+   Applied on top of classic-theme.css.
+   Breakpoint: 768px (tablet), 480px (phone).
+   All component class names remain stable.
+   ══════════════════════════════════════════════ */
+
+/* ── Base mobile resets ─────────────────────── */
+
+* { box-sizing: border-box; }
+
+html {
+  /* Do NOT set overflow: hidden on html/body — it breaks scrolling */
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+}
+
+body {
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  min-height: 100%;
+}
+
+/* ── Page wrapper — responsive width ─────────── */
+
+.ml-page-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: transparent;
+  border: none;
+  /* Topbar (44px) is now outside this wrapper */
+  min-height: calc(100vh - 44px);
+  display: flex;
+  position: relative;
+}
+
+/* ── Sidebar — desktop visible, mobile hidden ── */
+
+.ml-sidebar {
+  width: 180px;
+  flex-shrink: 0;
+  background: #181818;
+  border-right: 1px solid #000;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+  /* On desktop, sidebar scrolls with the page wrapper */
+  overflow-y: auto;
+  max-height: calc(100vh - 32px);
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
+.ml-main {
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+  padding: 20px 24px;
+}
+
+/* ── Mobile header ───────────────────────────── */
+
+.ml-topbar {
+  background: #151515;
+  border-bottom: 1px solid #000;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  /* Sticky top bar — sticks relative to the viewport scroll (html/body), not a sub-container */
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  /* Ensure it's never clipped by parent overflow */
+  width: 100%;
+}
+
+.ml-topbar-logo {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffcc33;
+  font-family: Verdana, sans-serif;
+  white-space: nowrap;
+}
+
+.ml-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  color: #888;
+  font-family: Verdana, sans-serif;
+  white-space: nowrap;
+}
+
+/* Hamburger toggle — hidden on desktop */
+.ml-menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid #333;
+  color: #cc3333;
+  cursor: pointer;
+  padding: 3px 7px;
+  font-size: 14px;
+  line-height: 1;
+  font-family: Verdana, sans-serif;
+  flex-shrink: 0;
+}
+
+/* ── Mobile drawer overlay ───────────────────── */
+
+.ml-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 39;
+}
+
+/* ── Bottom nav bar — mobile only ────────────── */
+
+.ml-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: #151515;
+  border-top: 1px solid #000;
+  height: 52px;
+}
+
+.ml-bottom-nav-inner {
+  display: flex;
+  height: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.ml-bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #555;
+  font-size: 8px;
+  font-family: Verdana, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  transition: color 0.15s;
+  text-decoration: none;
+}
+
+.ml-bottom-nav-item:hover,
+.ml-bottom-nav-item.active {
+  color: #cc3333;
+}
+
+.ml-bottom-nav-item svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Responsive grid helpers ─────────────────── */
+
+.ml-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ml-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.ml-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.ml-grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+}
+
+/* ── Scrollable table wrapper ────────────────── */
+
+.ml-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.ml-table-scroll table {
+  min-width: 480px; /* force scroll on mobile */
+}
+
+/* ── Stack panels vertically on mobile ───────── */
+
+.ml-panel-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* ══════════════════════════════════════════════
+   MOBILE BREAKPOINT (≤ 768px)
+══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+
+  /* Show hamburger, hide desktop sidebar */
+  .ml-menu-toggle { display: flex !important; align-items: center; justify-content: center; }
+
+  /* Sidebar: position:fixed removes it from flex flow entirely.
+     No width:0 trick needed — fixed elements don't occupy layout space. */
+  .ml-sidebar {
+    position: fixed !important;      /* pulls out of flex flow; overrides desktop sticky */
+    top: 44px !important;            /* below the Apple topbar */
+    left: 0 !important;
+    bottom: 0 !important;
+    z-index: 40 !important;
+    width: 260px !important;         /* drawer visual width */
+    transform: translateX(-100%) !important;  /* hidden off-left by default */
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), 1px 0 0 rgba(255,255,255,0.06) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    align-self: auto !important;
+    max-height: none !important;
+  }
+
+  .ml-sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  .ml-overlay.visible {
+    display: block;
+  }
+
+  /* Show bottom nav */
+  .ml-bottom-nav { display: flex !important; }
+
+  /* Mobile: tighter side padding, big bottom padding for tab bar */
+  .ml-main {
+    padding: 16px 14px 80px;
+  }
+
+  /* Remove right border on wrapper */
+  .ml-page-wrapper {
+    border: none;
+  }
+
+  /* Top bar tighter */
+  .ml-topbar-right .ml-topbar-round { display: none; }
+
+  /* Grids collapse to 1 or 2 col */
+  .ml-grid-4 { grid-template-columns: 1fr 1fr; }
+  .ml-grid-3 { grid-template-columns: 1fr 1fr; }
+  .ml-panel-row { grid-template-columns: 1fr; }
+
+  /* Stat values smaller on mobile */
+  .stat-val { font-size: 13px !important; }
+
+  /* Panel headers wrap */
+  .panel-header { flex-wrap: wrap; gap: 4px; }
+
+  /* Buttons: slightly compact but still tappable (44px min tap target) */
+  .btn { font-size: 10px !important; padding: 5px 8px !important; }
+  /* Ensure minimum tap target size for all interactive elements */
+  button, a, [role="button"] { min-height: 36px; }
+}
+
+/* ══════════════════════════════════════════════
+   SMALL PHONE BREAKPOINT (≤ 480px)
+══════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .ml-grid-4 { grid-template-columns: 1fr 1fr; }
+  .ml-grid-3 { grid-template-columns: 1fr 1fr; }
+  .ml-grid-2 { grid-template-columns: 1fr 1fr; }
+  .ml-grid-auto { grid-template-columns: 1fr; }
+
+  body { font-size: 11px !important; }
+
+  .ml-topbar-logo { font-size: 13px; }
+
+  /* Mission/contract cards stack cleanly */
+  .panel { margin-bottom: 6px; }
+}
+
+/* ══════════════════════════════════════════════
+   ARCHETYPE SELECT — mobile layout
+══════════════════════════════════════════════ */
+
+.arch-layout {
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
+
+.arch-grid {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 6px;
+  align-content: start;
+}
+
+.arch-detail {
+  width: 280px;
+  flex-shrink: 0;
+  background: #181818;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #000;
+}
+
+@media (max-width: 768px) {
+  .arch-layout { flex-direction: column; }
+  .arch-grid { grid-template-columns: 1fr 1fr; border-right: none; padding: 8px; }
+  .arch-detail { width: 100%; border-left: none; border-top: 1px solid #000; max-height: 340px; }
+}
+
+@media (max-width: 480px) {
+  .arch-grid { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════
+   FAMILY TREE — scrollable on mobile
+══════════════════════════════════════════════ */
+
+.family-tree-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+
+/* ══════════════════════════════════════════════
+   MODAL — full-screen on mobile
+══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .ml-modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .ml-modal-overlay .panel {
+    max-width: 100% !important;
+    max-height: 92vh !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   PHONE-FIRST LAYOUT IMPROVEMENTS
+   Target: 375px (small phone) and 768px (tablet)
+   Goals: single-column, 44px tap targets,
+          readable text, no horizontal scroll.
+══════════════════════════════════════════════ */
+
+/* ── Global tap target enforcement ─────────── */
+
+@media (max-width: 768px) {
+
+  /* Minimum 44px touch targets on all interactive elements */
+  button, .btn, a[role="button"], input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception: very small icon-only inline buttons (deliberately small) */
+  button.btn-icon-xs {
+    min-height: 28px;
+    min-width: 28px;
+  }
+
+  /* Base font size for readability on small screens */
+  body {
+    font-size: 15px;
+  }
+
+  /* Tighten main content padding on small screens */
+  .ml-main {
+    padding: 12px 14px;
+    padding-bottom: 70px; /* space for bottom nav */
+  }
+}
+
+/* ── Dashboard ──────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Stack stat cards to 2 columns */
+  .ml-grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* Full width for stat rows */
+  .ml-panel-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .ml-panel-row > * {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Live events banner — don't clip */
+  .live-events-banner {
+    font-size: 12px;
+  }
+
+  /* "What to do next" panel — larger tap targets */
+  .what-next-item {
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Single column on small phones */
+  .ml-grid-4 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ── Jobs page ──────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Job cards: tighten up, stack badges */
+  .job-card-badges {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  /* Job CTAs take full width */
+  .job-cta-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .job-cta-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Filter bar: horizontal scroll instead of wrapping */
+  .job-filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap !important;
+    padding-bottom: 4px;
+    gap: 4px;
+  }
+  .job-filter-bar button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 36px; /* slightly smaller for filter pills */
+    min-width: unset;
+  }
+
+  /* Outcome modal full screen */
+  .job-outcome-modal {
+    border-radius: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+}
+
+/* ── Family page ────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Family tree: horizontal scroll */
+  .family-tree-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Roster table: make it scrollable */
+  .data-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Tab bar: horizontal scroll */
+  .family-tab-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap !important;
+    border-bottom: 1px solid var(--border, #1a1a1a);
+    gap: 0;
+    margin-bottom: 12px;
+  }
+  .family-tab-bar button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 40px;
+    padding: 6px 14px;
+    min-width: unset;
+  }
+
+  /* Recruit cards: stack action buttons */
+  .recruit-card-actions {
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+  .recruit-card-actions .btn {
+    width: 100%;
+  }
+
+  /* Boss controls: wrap onto 2 columns */
+  .boss-controls {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px !important;
+  }
+  .boss-controls .btn {
+    font-size: 11px;
+    justify-content: center;
+  }
+}
+
+/* ── Business / Turf page ───────────────────── */
+
+@media (max-width: 768px) {
+  /* 4×4 business grid → 2×8 on mobile */
+  .business-slot-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  /* Income summary bar — stack to 2 columns */
+  .turf-summary-bar {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Front detail tabs — scrollable */
+  .front-tab-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap !important;
+    gap: 2px;
+  }
+  .front-tab-bar button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: unset;
+    min-height: 40px;
+  }
+
+  /* P&L table — scrollable */
+  .ml-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+  .ml-table-scroll table {
+    min-width: 480px;
+  }
+}
+
+/* ── District map ───────────────────────────── */
+
+@media (max-width: 768px) {
+  /* District cards: ensure influence bars are full width */
+  .district-card-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Turf detail rows: stack layout */
+  .turf-row-layout {
+    flex-direction: column !important;
+    gap: 8px;
+  }
+  .turf-row-layout > div {
+    min-width: 0 !important;
+  }
+}
+
+/* ── Profile page ───────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Stats grid: 3 columns on phone (from 4) */
+  .profile-stats-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  /* Archetype card: stack layout */
+  .archetype-card-layout {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* ── Modals: full-screen on small phones ─────── */
+
+@media (max-width: 480px) {
+  /* Any dialog/panel in a fixed overlay becomes bottom sheet */
+  .fixed.inset-0 > .panel,
+  .fixed.inset-0 > div > .panel {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    max-width: 100% !important;
+    max-height: 90vh !important;
+    width: 100% !important;
+    border-radius: 12px 12px 0 0 !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* ── Data tables ────────────────────────────── */
+
+@media (max-width: 768px) {
+  .data-table {
+    font-size: 11px !important;
+  }
+  .data-table th,
+  .data-table td {
+    padding: 6px 8px !important;
+    white-space: nowrap;
+  }
+}
+
+/* ── Notifications page ─────────────────────── */
+
+@media (max-width: 768px) {
+  .notification-card {
+    padding: 12px 10px;
+  }
+  .notification-card:active {
+    background: rgba(204, 51, 51, 0.05);
+  }
+}
+
+/* ── Admin page ─────────────────────────────── */
+
+@media (max-width: 768px) {
+  .admin-tab-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap !important;
+  }
+  .admin-tab-bar button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 40px;
+    min-width: unset;
+  }
+}
+
+/* ── Onboarding page ─────────────────────────── */
+
+@media (max-width: 480px) {
+  /* Onboarding: reduce padding for small phones */
+  .onboarding-wrapper {
+    padding: 16px !important;
+  }
+  .onboarding-archetype-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ── Season / Leaderboard ───────────────────── */
+
+@media (max-width: 768px) {
+  .season-stats-bar {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+  }
+}
+
+/* ── Input sizing ───────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Inputs on mobile: larger hit area, bigger text */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select {
+    font-size: 16px !important; /* Prevents iOS auto-zoom on focus */
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+  }
+}
+
+/* ── Prevent horizontal overflow ───────────── */
+
+@media (max-width: 768px) {
+  .panel {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Flex containers that should wrap */
+  .flex-wrap-mobile {
+    flex-wrap: wrap !important;
+  }
+
+  /* Hide non-critical columns in tight tables */
+  .hide-mobile {
+    display: none !important;
+  }
+}

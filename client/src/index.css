@@ -1,0 +1,111 @@
+/* APPLE-INSPIRED THEME — swap this import to change visual theme */
+/* To revert to classic: change apple-theme.css → classic-theme.css */
+@import './apple-theme.css';
+/* MOBILE RESPONSIVE — always included */
+@import './mobile.css';
+/* PAGE-LEVEL MOBILE-FIRST STYLES */
+@import './styles/pages.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────
+   MAFIALIFE — Base Token Layer
+   Tokens defined here; visual overrides live in
+   classic-theme.css (or your replacement theme).
+───────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    --radius: 6px;
+    --color-cash:     44 100% 60%;
+    --color-heat:     22 90% 52%;
+    --color-success:  140 50% 38%;
+    --color-warning:  40 85% 50%;
+    --color-danger:   2 70% 44%;
+    --color-blacksite: 270 35% 42%;
+    --color-blue:     210 60% 48%;
+  }
+
+  .dark { --radius: 0px; }
+
+  html { @apply dark; -webkit-font-smoothing: antialiased; }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); }
+}
+
+@layer components {
+  .label-caps {
+    @apply text-xs font-semibold tracking-widest uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+  .panel {
+    @apply bg-card border border-border;
+  }
+  .panel-header {
+    @apply px-4 py-2.5 border-b border-border flex items-center justify-between;
+    background: hsl(var(--muted));
+  }
+  .panel-title {
+    @apply text-xs font-bold tracking-wide uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+  .stat-val {
+    @apply text-lg font-bold tabular-nums;
+    color: hsl(var(--foreground));
+  }
+  .text-cash     { color: hsl(var(--color-cash)); }
+  .text-heat     { color: hsl(var(--color-heat)); }
+  .text-danger   { color: hsl(var(--color-danger)); }
+  .text-success  { color: hsl(var(--color-success)); }
+  .text-warn     { color: hsl(var(--color-warning)); }
+  .text-bs       { color: hsl(var(--color-blacksite)); }
+  .divider       { @apply border-t border-border; }
+
+  .badge {
+    @apply inline-flex items-center px-1.5 py-0.5 text-xs font-semibold border;
+    line-height: 1.2;
+  }
+  .badge-green  { @apply badge bg-green-950/60 text-green-400 border-green-900/50; }
+  .badge-red    { @apply badge bg-red-950/60 text-red-400 border-red-900/50; }
+  .badge-yellow { @apply badge bg-yellow-950/60 text-yellow-400 border-yellow-900/50; }
+  .badge-blue   { @apply badge bg-blue-950/60 text-blue-400 border-blue-900/50; }
+  .badge-purple { @apply badge bg-purple-950/60 text-purple-400 border-purple-900/50; }
+  .badge-gray   { @apply badge bg-zinc-900/60 text-zinc-400 border-zinc-800/50; }
+  .badge-gold   { @apply badge border-yellow-800/40; background: hsl(40 50% 8% / 0.6); color: hsl(var(--color-cash)); }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold border transition-all cursor-pointer;
+    line-height: 1;
+  }
+  .btn-primary { @apply btn bg-primary/10 text-primary border-primary/30 hover:bg-primary hover:text-primary-foreground; }
+  .btn-ghost   { @apply btn bg-transparent text-muted-foreground border-border hover:text-foreground hover:bg-secondary; }
+  .btn-danger  { @apply btn bg-red-950/40 text-red-400 border-red-900/40 hover:bg-red-600 hover:text-white; }
+  .btn-success { @apply btn bg-green-950/40 text-green-400 border-green-900/40 hover:bg-green-700 hover:text-white; }
+
+  .data-table { @apply w-full text-xs; }
+  .data-table th {
+    @apply label-caps px-3 py-2 text-left border-b border-border;
+    background: hsl(var(--muted));
+  }
+  .data-table td { @apply px-3 py-2.5 border-b border-border/50; }
+  .data-table tr:last-child td { @apply border-0; }
+  .data-table tr:hover td { background: hsl(var(--secondary)); }
+
+  .tier-STARTER  { color: hsl(var(--muted-foreground)); }
+  .tier-STANDARD { color: hsl(var(--color-blue)); }
+  .tier-ADVANCED { color: hsl(var(--color-warning)); }
+  .tier-ELITE    { color: hsl(var(--color-danger)); }
+
+  .stat-bar-track { @apply h-1.5 bg-border; }
+  .stat-bar-fill  { @apply h-1.5; }
+
+  .game-input {
+    @apply w-full bg-input border border-border text-foreground text-xs px-3 py-2;
+    outline: none;
+    &:focus { @apply border-primary; }
+  }
+}
