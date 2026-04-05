@@ -5,6 +5,7 @@
  * Shows P&L, staffing, exclusive jobs, and upgrade path for a specific front.
  */
 
+import { ENABLE_DEV_TOOLS } from '../lib/env';
 import { useState } from 'react';
 import { useRoute } from 'wouter';
 import { useGame } from '../lib/gameContext';

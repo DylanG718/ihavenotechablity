@@ -13,6 +13,7 @@ import { useLocation } from 'wouter';
 import { ARCHETYPES } from '../lib/archetypes';
 import { useGame } from '../lib/gameContext';
 import { Analytics } from '../lib/analyticsEngine';
+import { usePlayerBootstrap } from '../lib/playerBootstrap';
 import { NEW_FAMILY_CONFIG, FAMILY_RANKS } from '../../../shared/familyConfig';
 import type { OnboardingStep } from '../../../shared/ops';
 import {
@@ -968,6 +969,7 @@ function StepDashboardTour({ onNext }: { onNext: () => void }) {
 export default function Onboarding() {
   const [, navigate] = useLocation();
   const { player }   = useGame();
+  const { markOnboardingComplete } = usePlayerBootstrap();
 
   const [state, setState] = useState<OnboardingState>({
     path:              'standard',
@@ -997,16 +999,20 @@ export default function Onboarding() {
   }, []);
 
   const finish = useCallback((path: OnboardingPath) => {
+    const archetype = state.archetypeChosen ?? undefined;
+    markOnboardingComplete(archetype);
     Analytics.onboardingCompleted?.(player.id, path);
     if (path === 'founder') {
       Analytics.founderOnboardingCompleted?.(player.id);
-      navigate('/');  // → founder dashboard
+      navigate('/');  // → dashboard (now onboarding is marked complete, routing will work)
     } else {
       navigate('/');
     }
-  }, [navigate, player.id]);
+  }, [navigate, player.id, state.archetypeChosen, markOnboardingComplete]);
 
   const skip = useCallback(() => {
+    // Mark complete even on skip — prevents redirect loop
+    markOnboardingComplete();
     Analytics.onboardingAbandoned?.(player.id, currentStep);
     navigate('/');
   }, [navigate, player.id, currentStep]);

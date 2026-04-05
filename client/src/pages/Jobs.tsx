@@ -637,13 +637,6 @@ export default function JobsPage() {
         sub="Solo and crew operations. Rank-based jobs unlock as you rise. Universal jobs scale with your rank."
       />
 
-      {/* DEV info banner */}
-      <div style={{ background: '#0d1020', border: '1px solid #1e2840', padding: '7px 12px', fontSize: '10px', color: '#5580bb', borderRadius: '4px' }}>
-        <strong>DEV:</strong> Playing as <strong>{player.alias}</strong> ({playerRole ?? 'Unaffiliated'}).
-        Switch role via the sidebar switcher. Universal jobs scale reward by rank multiplier.
-        Ranked jobs show locked if your rank is too low.
-      </div>
-
       {/* Chip bar filter */}
       <ChipBar
         categories={allCategories}

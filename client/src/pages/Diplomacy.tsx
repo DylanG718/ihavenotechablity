@@ -14,6 +14,7 @@
  */
 
 import { useState } from 'react';
+import { ENABLE_DEV_TOOLS } from '../lib/env';
 import { useGame } from '../lib/gameContext';
 import { useLocation } from 'wouter';
 import { can } from '../lib/permissions';
@@ -244,13 +245,15 @@ function RelationCard({ rel, myFamilyId, canAct, onInitiateSitdown }: {
             }}>
               <Clock size={12} />
               Diplomatic cooldown — next change available in {cooldownRemaining}.
-              <button
-                onClick={() => setDevSkip(true)}
-                style={{ marginLeft: 'auto', fontSize: '9px', background: 'none', border: '1px solid #2a3a5a', color: '#5580bb', cursor: 'pointer', padding: '2px 6px' }}
-                data-testid={`dev-skip-cooldown-${targetId}`}
-              >
-                DEV: Skip
-              </button>
+              {ENABLE_DEV_TOOLS && (
+                <button
+                  onClick={() => setDevSkip(true)}
+                  style={{ marginLeft: 'auto', fontSize: '9px', background: 'none', border: '1px solid #2a3a5a', color: '#5580bb', cursor: 'pointer', padding: '2px 6px' }}
+                  data-testid={`dev-skip-cooldown-${targetId}`}
+                >
+                  DEV: Skip
+                </button>
+              )}
             </div>
           )}
 

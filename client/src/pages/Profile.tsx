@@ -1,3 +1,4 @@
+import { ENABLE_DEV_TOOLS } from '../lib/env';
 import { useGame } from '../lib/gameContext';
 import { fmt, MOCK_PLAYERS } from '../lib/mockData';
 import { ARCHETYPE_MAP } from '../lib/archetypes';

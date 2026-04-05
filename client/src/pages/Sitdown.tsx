@@ -19,6 +19,7 @@
  * Default view: loads MOCK_SITDOWNS[0] (ACTIVE) for demo purposes.
  */
 
+import { ENABLE_DEV_TOOLS } from '../lib/env';
 import { useState, useEffect, useRef } from 'react';
 import { useGame } from '../lib/gameContext';
 import { useLocation } from 'wouter';
@@ -322,6 +323,7 @@ export default function SitdownPage() {
   const [sitdownId, setSitdownId] = useState(MOCK_SITDOWNS[0].id);
   const [sitdown, setSitdown] = useState<Sitdown>(MOCK_SITDOWNS[0]);
   const [showCounter, setShowCounter] = useState(false);
+  // DEV: devSkip only works when ENABLE_DEV_TOOLS is true
   const [devSkip, setDevSkip] = useState(false);
   const [snubEffects, setSnubEffects] = useState<ReturnType<typeof computeSnubEffects>>([]);
   const [resolution, setResolution] = useState<string | null>(null);
@@ -404,28 +406,32 @@ export default function SitdownPage() {
         }
       />
 
-      {/* ── DEV controls ─────────────────────── */}
-      <SitdownSelector current={sitdownId} onChange={handleLoadSitdown} />
-      <div style={{ display: 'flex', gap: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
-        <button
-          onClick={() => setDevSkip(!devSkip)}
-          className="btn btn-ghost"
-          style={{ fontSize: '9px', padding: '3px 10px', borderColor: '#1e2840', color: '#5580bb' }}
-          data-testid="dev-skip-timer"
-        >
-          {devSkip ? '▶ Timers active' : '⚡ DEV: Skip timers'}
-        </button>
-        {sitdown.state === 'ACTIVE' && (
-          <button
-            onClick={handleForceSnub}
-            className="btn btn-ghost"
-            style={{ fontSize: '9px', padding: '3px 10px', borderColor: '#4a1010', color: '#cc3333' }}
-            data-testid="dev-force-snub"
-          >
-            DEV: Force Snub
-          </button>
-        )}
-      </div>
+      {/* DEV controls (dev mode only) */}
+      {ENABLE_DEV_TOOLS && (
+        <>
+          <SitdownSelector current={sitdownId} onChange={handleLoadSitdown} />
+          <div style={{ display: 'flex', gap: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setDevSkip(!devSkip)}
+              className="btn btn-ghost"
+              style={{ fontSize: '9px', padding: '3px 10px', borderColor: '#1e2840', color: '#5580bb' }}
+              data-testid="dev-skip-timer"
+            >
+              {devSkip ? '▶ Timers active' : '⚡ DEV: Skip timers'}
+            </button>
+            {sitdown.state === 'ACTIVE' && (
+              <button
+                onClick={handleForceSnub}
+                className="btn btn-ghost"
+                style={{ fontSize: '9px', padding: '3px 10px', borderColor: '#4a1010', color: '#cc3333' }}
+                data-testid="dev-force-snub"
+              >
+                DEV: Force Snub
+              </button>
+            )}
+          </div>
+        </>
+      )}
 
       {/* Sitdown header */}
       <div className="panel" style={{ marginBottom: '10px', padding: '12px 14px' }}>

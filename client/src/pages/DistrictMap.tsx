@@ -4,6 +4,7 @@
  * Mobile-first rewrite: page-stack + district cards with inline turf expand.
  */
 
+import { ENABLE_DEV_TOOLS } from '../lib/env';
 import { useState } from 'react';
 import { useGame } from '../lib/gameContext';
 import { fmt } from '../lib/mockData';

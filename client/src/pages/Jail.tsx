@@ -17,6 +17,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useGame } from '../lib/gameContext';
+import { ENABLE_DEV_TOOLS } from '../lib/env';
 import { useLocation } from 'wouter';
 import {
   MOCK_JAIL_RECORDS, MOCK_KITES, MOCK_JAIL_CHAT,
@@ -729,23 +730,25 @@ export default function JailPage() {
         sub="Arrest and detention records. Actions are limited while incarcerated."
       />
 
-      {/* ── DEV: View as selector ───────────────── */}
-      <div style={{ background: '#0d1020', border: '1px solid #1e2840', padding: '8px 12px', marginBottom: '10px', fontSize: '10px' }}>
-        <span style={{ color: '#5580bb', marginRight: '8px' }}>DEV: View as</span>
-        <select
-          value={devPlayerId}
-          onChange={e => handleDevSwitch(e.target.value)}
-          style={{ background: '#111', border: '1px solid #2a3a5a', color: '#e0e0e0', fontSize: '10px', padding: '2px 6px' }}
-          data-testid="dev-player-select"
-        >
-          {MOCK_JAIL_RECORDS.map(r => (
-            <option key={r.id} value={r.player_id}>
-              {PLAYER_NAMES[r.player_id] ?? r.player_id} — {r.tier} [{r.status}]
-            </option>
-          ))}
-          <option value="p-boss">Don Corrado (not jailed — leadership view)</option>
-        </select>
-      </div>
+      {/* DEV: View as selector (dev mode only) */}
+      {ENABLE_DEV_TOOLS && (
+        <div style={{ background: '#0d1020', border: '1px solid #1e2840', padding: '8px 12px', marginBottom: '10px', fontSize: '10px' }}>
+          <span style={{ color: '#5580bb', marginRight: '8px' }}>DEV: View as</span>
+          <select
+            value={devPlayerId}
+            onChange={e => handleDevSwitch(e.target.value)}
+            style={{ background: '#111', border: '1px solid #2a3a5a', color: '#e0e0e0', fontSize: '10px', padding: '2px 6px' }}
+            data-testid="dev-player-select"
+          >
+            {MOCK_JAIL_RECORDS.map(r => (
+              <option key={r.id} value={r.player_id}>
+                {PLAYER_NAMES[r.player_id] ?? r.player_id} — {r.tier} [{r.status}]
+              </option>
+            ))}
+            <option value="p-boss">Don Corrado (not jailed — leadership view)</option>
+          </select>
+        </div>
+      )}
 
       {/* Hitman redirect notice */}
       {isHitman && (

@@ -5,6 +5,7 @@
  * Shows current season standings, historical snapshots, season rules.
  */
 
+import { ENABLE_DEV_TOOLS } from '../lib/env';
 import { useState } from 'react';
 import { useGame } from '../lib/gameContext';
 import { fmt } from '../lib/mockData';
