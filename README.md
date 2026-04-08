@@ -1,4 +1,4 @@
-# MafiaLife
+# The Last Firm
 
 A persistent browser-based organized crime strategy game. Players join families, run businesses, execute jobs, and compete for territorial control.
 
@@ -22,7 +22,7 @@ A persistent browser-based organized crime strategy game. Players join families,
 
 ```bash
 git clone <repo-url>
-cd mafialife
+cd thelastfirm
 npm install
 ```
 
@@ -258,7 +258,7 @@ Test breakpoints: 375px, 480px, 768px, 1280px
 ## Project Structure
 
 ```
-mafialife/
+thelastfirm/
 ├── client/src/
 │   ├── lib/
 │   │   ├── supabaseClient.ts   ← Supabase client + all query functions

@@ -1,5 +1,5 @@
 /**
- * opsData.ts — Mock/seed data for the MafiaLife operating systems layer.
+ * opsData.ts — Mock/seed data for the The Last Firm operating systems layer.
  *
  * Covers:
  *  - Notifications (MOCK_NOTIFICATIONS)

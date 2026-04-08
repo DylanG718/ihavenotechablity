@@ -1,4 +1,4 @@
-# MafiaLife — Systems Design Reference
+# The Last Firm — Systems Design Reference
 
 **Version:** 2.0  
 **Date:** April 2026  

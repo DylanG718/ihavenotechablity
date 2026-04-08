@@ -1,4 +1,4 @@
-# MafiaLife — Alpha Deployment Guide
+# The Last Firm — Alpha Deployment Guide
 
 This document covers everything needed to take the game from this repo to a live URL.
 
@@ -29,7 +29,7 @@ This document covers everything needed to take the game from this repo to a live
 
 ```bash
 git clone <your-repo-url>
-cd mafialife
+cd thelastfirm
 npm install
 npm run dev
 ```
@@ -158,7 +158,7 @@ Vercel settings that are auto-configured via `vercel.json`:
 npm install -g vercel
 vercel login
 
-cd mafialife
+cd thelastfirm
 vercel
 
 # Set env vars:
@@ -180,7 +180,7 @@ vercel --prod
 ## Connecting a Custom Domain
 
 1. Vercel Dashboard → Project → Domains → Add
-2. Add your domain: `mafialife.gg` (or whatever)
+2. Add your domain: `thelastfirm.gg` (or whatever)
 3. Follow DNS instructions (CNAME or A record)
 4. Update Supabase Auth settings:
    - Add the new domain to Redirect URLs
@@ -193,7 +193,7 @@ vercel --prod
 Before deploying, verify the build passes locally:
 
 ```bash
-cd mafialife
+cd thelastfirm
 npm run build
 # Output: dist/public/index.html + assets/
 

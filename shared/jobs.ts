@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// MAFIALIFE — Jobs Data Model
+// THE LAST FIRM — Jobs Data Model
 // Source of truth for all job definitions, engine logic, and seeding.
 // ═══════════════════════════════════════════════════════════════════
 
@@ -53,6 +53,47 @@ export type JobEffectScope = 'SELF' | 'FAMILY_ABSTRACT';
 // JOB DEFINITION
 // ─────────────────────────────────────────────
 
+// ─────────────────────────────────────────────
+// NARRATIVE CONTENT — side-car per job.
+// Stored in jobNarratives.ts, keyed by job_id.
+// Kept separate from JobDefinition so the core
+// data model stays lean and backend-compatible.
+// ─────────────────────────────────────────────
+
+/** A pool of outcome narratives — one is randomly selected at runtime */
+export interface OutcomeNarrativePool {
+  /** 2-5 distinct narrative strings. One is picked at runtime. */
+  narratives: string[];
+}
+
+export interface JobNarrative {
+  job_id: string;
+
+  // ── Card content fields ──────────────────────────────────
+  /** 1-line hook. Max ~60 chars. Replaces/supplements lore_tagline. */
+  summary: string;
+
+  /** 2-3 sentence job brief. Max ~180 chars. Flavor + context. */
+  flavor: string;
+
+  // ── Outcome narratives (pick one randomly from pool) ────
+  /** Short win narratives. Max ~80 chars each. */
+  success: OutcomeNarrativePool;
+
+  /** Short fail narratives. Max ~80 chars each. */
+  failure: OutcomeNarrativePool;
+
+  /** Busted narratives (only for high jail-risk jobs). Max ~80 chars each. */
+  busted?: OutcomeNarrativePool;
+
+  // ── Art / image asset ────────────────────────────────────
+  /** Slug matching the generated image filename. e.g. 'protection_rounds' */
+  art_key: string;
+
+  /** Whether a busted image variant exists for this job */
+  has_busted_image: boolean;
+}
+
 export interface JobDefinition {
   id: string;
   name: string;
@@ -86,6 +127,14 @@ export interface JobDefinition {
 
   /** See JobEffectScope — default SELF for all jobs here */
   effect_scope: JobEffectScope;
+
+  /**
+   * Optional inline narrative. If present, the UI uses this directly.
+   * If absent, the UI looks up the job_id in the jobNarratives registry.
+   * Prefer the registry for new jobs — keep JobDefinition focused on
+   * gameplay data.
+   */
+  narrative?: Omit<JobNarrative, 'job_id'>;
 }
 
 // ─────────────────────────────────────────────

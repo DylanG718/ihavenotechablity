@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Migration: 005_auth_rpcs.sql
+-- THE LAST FIRM — Migration: 005_auth_rpcs.sql
 --
 -- Adds the RPCs needed for auth + session bootstrap:
 --   1. create_player_profile  — called on signup, creates player row

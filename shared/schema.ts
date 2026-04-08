@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════
-// MAFIALIFE — Canonical Schema
+// THE LAST FIRM — Canonical Schema
 // Aligned to spec object v1.0.
 // All enum values match spec string identifiers exactly where specified.
 // Extended values (e.g. additional contract states) are clearly marked.

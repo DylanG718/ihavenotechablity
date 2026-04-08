@@ -70,7 +70,7 @@ function OnboardingShell({
         flexShrink: 0,
       }}>
         <div style={{ fontSize: '11px', fontWeight: '900', color: '#cc3333', letterSpacing: '0.06em' }}>
-          MAFIALIFE
+          THE LAST FIRM
         </div>
         {!isFirstStep && (
           <button
@@ -187,7 +187,7 @@ function StepIntro({ onNext }: { onNext: () => void }) {
   return (
     <div>
       <StepHeading
-        title="Welcome to MafiaLife"
+        title="Welcome to The Last Firm"
         body="A world built on loyalty, territory, and quiet violence. Families run districts, operate businesses, and wage wars through power scores — not words."
       />
       <div style={{ fontSize: '12px', color: '#777', lineHeight: '1.7', marginBottom: '24px' }}>
@@ -878,7 +878,7 @@ function StepFamilyIntro({ onNext }: { onNext: () => void }) {
       <StepHeading
         tag="The Social Layer"
         title="Families"
-        body="Families are the core power unit in MafiaLife. Being in one — or leading one — defines what you can do."
+        body="Families are the core power unit in The Last Firm. Being in one — or leading one — defines what you can do."
       />
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
         {[

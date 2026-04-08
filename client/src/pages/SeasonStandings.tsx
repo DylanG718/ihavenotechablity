@@ -1,5 +1,5 @@
 /**
- * MafiaLife — Season Standings
+ * The Last Firm — Season Standings
  * Route: /season
  *
  * Shows current season standings, historical snapshots, season rules.

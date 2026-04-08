@@ -1,5 +1,5 @@
 -- ================================================================
--- MAFIALIFE — FULL DATABASE SCHEMA
+-- THE LAST FIRM — FULL DATABASE SCHEMA
 -- Run this ONCE in Supabase SQL Editor to set up all tables,
 -- RLS policies, RPC functions, and seed data.
 --
@@ -16,7 +16,7 @@ BEGIN;
 -- ----------------------------------------------------------------
 
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Initial Database Schema
+-- THE LAST FIRM — Initial Database Schema
 -- Migration: 001_initial_schema.sql
 --
 -- Conventions:
@@ -761,7 +761,7 @@ $$;
 -- ----------------------------------------------------------------
 
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Row Level Security Policies
+-- THE LAST FIRM — Row Level Security Policies
 -- Migration: 002_rls_policies.sql
 --
 -- RLS DESIGN PRINCIPLES:
@@ -1248,7 +1248,7 @@ CREATE POLICY "analytics_admin_read"
 -- ----------------------------------------------------------------
 
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — SQL RPC Functions
+-- THE LAST FIRM — SQL RPC Functions
 -- Migration: 003_rpc_functions.sql
 --
 -- All functions use SECURITY DEFINER so they run with elevated privileges
@@ -2158,7 +2158,7 @@ $$;
 -- ----------------------------------------------------------------
 
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Migration: 004_family_systems.sql
+-- THE LAST FIRM — Migration: 004_family_systems.sql
 --
 -- Implements:
 --   - Boss archetype → Runner archetype migration
@@ -2692,7 +2692,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- ----------------------------------------------------------------
 
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Migration: 005_auth_rpcs.sql
+-- THE LAST FIRM — Migration: 005_auth_rpcs.sql
 --
 -- Adds the RPCs needed for auth + session bootstrap:
 --   1. create_player_profile  — called on signup, creates player row
@@ -2987,7 +2987,7 @@ CREATE INDEX IF NOT EXISTS idx_families_boss_id ON families (boss_id);
 -- ----------------------------------------------------------------
 
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Seed Data
+-- THE LAST FIRM — Seed Data
 -- Run after migrations to populate a fresh database.
 -- NOTE: player auth_user_id fields are left NULL in seed —
 --       they get linked when real Supabase auth users sign up.

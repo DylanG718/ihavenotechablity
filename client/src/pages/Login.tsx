@@ -115,7 +115,7 @@ export default function Login() {
         {/* Wordmark */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{ fontSize: '28px', fontWeight: '900', color: '#cc3333', letterSpacing: '-0.02em', marginBottom: '4px' }}>
-            MAFIALIFE
+            THE LAST FIRM
           </div>
           <div style={{ fontSize: '10px', color: '#333', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             Alpha · Closed Access

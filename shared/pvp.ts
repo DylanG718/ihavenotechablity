@@ -9,7 +9,7 @@
  *     Layer 3: Player HP
  *
  *   High-value targets (Capo+) have layered defenses that multiple family
- *   members must chip away at over time — mirroring classic Mafia Life behavior.
+ *   members must chip away at over time — mirroring classic The Last Firm behavior.
  *
  * LOCKED CANON:
  *   - Melee weapons: low heat, weak, no upkeep

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Row Level Security Policies
+-- THE LAST FIRM — Row Level Security Policies
 -- Migration: 002_rls_policies.sql
 --
 -- RLS DESIGN PRINCIPLES:

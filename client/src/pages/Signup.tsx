@@ -94,7 +94,7 @@ export default function Signup() {
       }}>
         <div style={{ width: '100%', maxWidth: '400px', textAlign: 'center' }}>
           <div style={{ fontSize: '28px', fontWeight: '900', color: '#cc3333', marginBottom: '32px' }}>
-            MAFIALIFE
+            THE LAST FIRM
           </div>
           <div style={{ background: '#0f0f0f', border: '1px solid #2a4a2a', borderRadius: '8px', padding: '32px 24px' }}>
             <div style={{ fontSize: '18px', fontWeight: '700', color: '#4a9a4a', marginBottom: '12px' }}>
@@ -130,7 +130,7 @@ export default function Signup() {
         {/* Wordmark */}
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{ fontSize: '28px', fontWeight: '900', color: '#cc3333', letterSpacing: '-0.02em', marginBottom: '4px' }}>
-            MAFIALIFE
+            THE LAST FIRM
           </div>
           <div style={{ fontSize: '10px', color: '#333', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
             Alpha · Closed Access

@@ -1,5 +1,5 @@
 /**
- * MafiaLife — District Map
+ * The Last Firm — District Map
  * Route: /districts
  * Mobile-first rewrite: page-stack + district cards with inline turf expand.
  */

@@ -65,7 +65,7 @@ const MOCK_SESSION: AppSession = {
   access_token: 'mock-access-token',
   user: {
     id:             'mock-user-id',
-    email:          'dev@mafialife.local',
+    email:          'dev@thelastfirm.local',
     user_metadata:  { username: 'new_player', alias: 'New Player' },
   },
 };
@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           persistSession:     true,
           autoRefreshToken:   true,
           detectSessionInUrl: true,
-          storageKey:         'mafialife-auth',
+          storageKey:         'thelastfirm-auth',
         },
       });
 
@@ -156,7 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { createClient } = await import('@supabase/supabase-js');
       const url = import.meta.env.VITE_SUPABASE_URL as string;
       const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-      const sb  = createClient(url, key, { auth: { storageKey: 'mafialife-auth' } });
+      const sb  = createClient(url, key, { auth: { storageKey: 'thelastfirm-auth' } });
       await sb.auth.signOut();
     } catch (err) {
       console.error('[auth] signOut error:', err);

@@ -1,5 +1,5 @@
 /**
- * MafiaLife — Job Board
+ * The Last Firm — Job Board
  * Mobile-first rewrite: ChipBar filter + new JobCard layout.
  * All logic, data, hooks, and modals preserved.
  */
@@ -23,8 +23,10 @@ import {
 } from '../lib/worldConfig';
 import { MOCK_FRONT_INSTANCES, FAMILY_NAMES } from '../lib/worldSeed';
 import {
-  Lock, Zap, Users, User, Clock, Skull, Star, ChevronDown, ChevronUp, X,
+  Lock, Zap, Users, User, Clock, Skull, Star, ChevronDown, ChevronUp, X, ChevronRight,
 } from 'lucide-react';
+import { getJobNarrative, pickOutcome, PLACEHOLDER_NARRATIVE } from '../lib/jobNarratives';
+import { getJobBaseImage, getJobResultImage } from '../lib/jobImages';
 
 // ─────────────────────────────────────────────
 // HELPERS
@@ -121,43 +123,116 @@ function resolveJob(job: JobDefinition, scaledMax: number): OutcomeResult {
 function OutcomeModal({
   result, job, onClose,
 }: { result: OutcomeResult; job: JobDefinition; onClose: () => void }) {
+  const narrative   = getJobNarrative(job.id) ?? PLACEHOLDER_NARRATIVE;
+  const resultImage = getJobResultImage(narrative.art_key, result.success, result.jailed, narrative.has_busted_image);
+
+  // Pick narrative text
+  const outcomeText = result.jailed
+    ? (narrative.busted ? pickOutcome(narrative.busted) : pickOutcome(narrative.failure))
+    : result.success
+      ? pickOutcome(narrative.success)
+      : pickOutcome(narrative.failure);
+
+  const outcomeLabel = result.jailed ? 'ARRESTED' : result.success ? 'SUCCESS' : 'FAILED';
+  const outcomeColor = result.jailed ? '#cc7700' : result.success ? '#4a9a4a' : '#cc3333';
+  const outcomeBg    = result.jailed ? '#1a1200' : result.success ? '#0a1a0a' : '#1a0808';
+  const outcomeBdr   = result.jailed ? '#3a2800' : result.success ? '#2a4a2a' : '#3a1010';
+
   return (
     <div className="bottom-sheet open">
       <div className="bottom-sheet__panel">
-        <div className="panel-header">
-          <span className="panel-title">Job Outcome</span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888' }}>✕</button>
-        </div>
-        <div style={{ padding: '16px' }}>
-          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-            <div style={{ fontSize: '22px', fontWeight: 'bold', color: result.success ? '#4a9a4a' : '#cc3333', marginBottom: '4px' }}>
-              {result.success ? '✓ SUCCESS' : '✗ FAILED'}
+
+        {/* Result image — full width, no padding */}
+        {resultImage && (
+          <div style={{ position: 'relative', width: '100%', height: '160px', overflow: 'hidden', background: '#0a0a0a' }}>
+            <img
+              src={resultImage}
+              alt={job.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+            {/* Gradient overlay for outcome label readability */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to bottom, transparent 40%, rgba(8,8,8,0.9) 100%)',
+            }} />
+            {/* Outcome label bottom-left */}
+            <div style={{
+              position: 'absolute', bottom: '10px', left: '14px',
+              fontSize: '10px', fontWeight: '900', letterSpacing: '0.1em',
+              color: outcomeColor,
+            }}>
+              {outcomeLabel}
             </div>
-            <div style={{ fontSize: '11px', color: '#888' }}>{result.notes}</div>
+            {/* Close */}
+            <button
+              onClick={onClose}
+              style={{
+                position: 'absolute', top: '10px', right: '10px',
+                background: 'rgba(0,0,0,0.6)', border: '1px solid #333',
+                color: '#888', cursor: 'pointer', width: '28px', height: '28px',
+                borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >✕</button>
+          </div>
+        )}
+
+        {/* Header row (no image) */}
+        {!resultImage && (
+          <div className="panel-header">
+            <span className="panel-title" style={{ color: outcomeColor }}>{outcomeLabel}</span>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888' }}>✕</button>
+          </div>
+        )}
+
+        <div style={{ padding: '14px 16px 20px' }}>
+
+          {/* Job name */}
+          <div style={{ fontSize: '14px', fontWeight: '800', color: '#e0e0e0', marginBottom: '4px', letterSpacing: '-0.01em' }}>
+            {job.name}
           </div>
 
+          {/* Narrative text */}
+          <div style={{
+            background: outcomeBg, border: `1px solid ${outcomeBdr}`,
+            borderRadius: '4px', padding: '10px 12px',
+            fontSize: '12px', color: result.success ? '#c8e8c8' : result.jailed ? '#e8c878' : '#e8c8c8',
+            lineHeight: '1.65', marginBottom: '14px', fontStyle: 'italic',
+          }}>
+            {outcomeText}
+          </div>
+
+          {/* Stats table */}
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', marginBottom: '12px' }}>
             <tbody>
               {([
-                ['Cash Earned',  result.cashEarned > 0 ? fmt(result.cashEarned) : '—',  result.cashEarned > 0 ? '#ffcc33' : '#555'],
-                ['Heat +',       `+${result.heatGained}`,                                '#cc7700'],
-                ['XP Gained',    `+${result.xpEarned} XP`,                               '#5580bb'],
+                ['Payout',     result.cashEarned > 0 ? fmt(result.cashEarned) : '—',  result.cashEarned > 0 ? '#ffcc33' : '#444'],
+                ['Heat',       `+${result.heatGained}`,                                 '#cc7700'],
+                ['Experience', `+${result.xpEarned} XP`,                                '#5580bb'],
               ] as [string, string, string][]).map(([l, v, c]) => (
                 <tr key={l}>
-                  <td style={{ padding: '5px 0', color: '#888', borderBottom: '1px solid #1a1a1a' }}>{l}</td>
-                  <td style={{ padding: '5px 0', fontWeight: 'bold', color: c, textAlign: 'right', borderBottom: '1px solid #1a1a1a' }}>{v}</td>
+                  <td style={{ padding: '6px 0', color: '#666', borderBottom: '1px solid #151515', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{l}</td>
+                  <td style={{ padding: '6px 0', fontWeight: '700', color: c, textAlign: 'right', borderBottom: '1px solid #151515' }}>{v}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           {result.jailed && (
-            <div style={{ background: '#1a0808', border: '1px solid #3a1010', padding: '8px', marginBottom: '10px', fontSize: '10px', color: '#cc3333' }}>
-              ⚠ Arrested on the way out. Check County Jail.
+            <div style={{
+              background: '#1a0a00', border: '1px solid #3a1e00',
+              padding: '8px 12px', marginBottom: '12px',
+              fontSize: '11px', color: '#cc7700', lineHeight: '1.5', borderRadius: '3px',
+            }}>
+              ⚠ Taken in. You\'re in County Jail until bail is arranged or your time runs out.
             </div>
           )}
 
-          <button onClick={onClose} className="btn btn-primary" style={{ width: '100%', padding: '8px', minHeight: '48px' }}>
+          <button
+            onClick={onClose}
+            className="btn btn-primary"
+            style={{ width: '100%', padding: '12px', minHeight: '48px', fontWeight: '700' }}
+          >
             Continue
           </button>
         </div>
@@ -167,7 +242,7 @@ function OutcomeModal({
 }
 
 // ─────────────────────────────────────────────
-// JOB CARD — mobile-first layout
+// JOB CARD — narrative-led, image-first layout
 // ─────────────────────────────────────────────
 
 function JobCard({
@@ -183,20 +258,25 @@ function JobCard({
   onRun: (job: JobDefinition) => void;
   featured?: boolean;
 }) {
-  const canStart    = canStartJob(playerRole, job);
-  const onCooldown  = jobState ? isOnCooldown(jobState, job) : false;
-  const secsLeft    = useCooldownTick(jobState, job);
-  const scaled      = getScaledRewardBand(job, playerRole);
-  const riskLabel   = jailRiskLabel(job.jail_chance_base);
-  const riskColor   = JAIL_RISK_COLORS[riskLabel];
-  const catColor    = CATEGORY_COLORS[job.category] ?? '#888';
+  const [expanded, setExpanded] = useState(false);
 
+  const canStart   = canStartJob(playerRole, job);
+  const onCooldown = jobState ? isOnCooldown(jobState, job) : false;
+  const secsLeft   = useCooldownTick(jobState, job);
+  const scaled     = getScaledRewardBand(job, playerRole);
+  const riskLabel  = jailRiskLabel(job.jail_chance_base);
+  const riskColor  = JAIL_RISK_COLORS[riskLabel];
+  const catColor   = CATEGORY_COLORS[job.category] ?? '#888';
+  const isLocked   = !canStart;
+
+  // Narrative
+  const narrative   = getJobNarrative(job.id) ?? PLACEHOLDER_NARRATIVE;
+  const baseImage   = getJobBaseImage(narrative.art_key);
   const rewardText  = `${fmt(scaled.min)}–${fmt(scaled.max)}`;
   const rewardSuffix = job.reward_types.includes('RESPECT') ? '+Rep' :
                        job.reward_types.includes('INFLUENCE') ? '+Inf' :
                        job.reward_types.includes('INTEL') ? '+Intel' : '';
 
-  const isLocked = !canStart;
   const borderColor = featured ? '#ffcc33' : catColor;
 
   return (
@@ -204,140 +284,178 @@ function JobCard({
       className={`job-card${isLocked ? ' job-card--locked' : ''}`}
       data-testid={`job-card-${job.id}`}
     >
-      <div className="job-card__inner" style={{ borderLeftColor: borderColor }}>
-        {/* Header row: name + reward */}
-        <div className="job-card__header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: 0 }}>
-            {featured && <Star size={11} style={{ color: '#ffcc33', flexShrink: 0 }} />}
-            <span className="job-card__name">{job.name}</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-            <span className="job-card__reward">{rewardText}</span>
-            {rewardSuffix && <span style={{ fontSize: '9px', color: '#888' }}>{rewardSuffix}</span>}
-          </div>
-        </div>
+      <div className="job-card__inner" style={{ borderLeftColor: borderColor, paddingLeft: 0, paddingTop: 0 }}>
 
-        {/* Lore tagline */}
-        <div className="job-card__tagline">{job.lore_tagline}</div>
-
-        {/* Chip row: category + mode + status */}
-        <div className="job-card__chips">
-          <span className="job-card__chip" style={{
-            background: catColor + '18',
-            borderColor: catColor + '44',
-            color: catColor,
+        {/* ── IMAGE BANNER ────────────────────── */}
+        <div style={{ position: 'relative', width: '100%', height: '120px', overflow: 'hidden', background: '#0a0a0a', borderRadius: '4px 4px 0 0' }}>
+          {baseImage && (
+            <img
+              src={baseImage}
+              alt={job.name}
+              loading="lazy"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block' }}
+              onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
+            />
+          )}
+          {/* Gradient overlay for text legibility */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(8,8,8,0.75) 100%)',
+            pointerEvents: 'none',
+          }} />
+          {/* Category pill — top-left */}
+          <div style={{
+            position: 'absolute', top: '8px', left: '10px',
+            fontSize: '8px', fontWeight: '700', letterSpacing: '0.07em',
+            color: catColor, background: `${catColor}22`,
+            border: `1px solid ${catColor}44`,
+            padding: '2px 7px', borderRadius: '3px',
           }}>
             {job.category}
-          </span>
-          <span className="job-card__chip" style={{ background: '#1a1a1a', borderColor: '#2a2a2a', color: '#aaa' }}>
-            {MODE_ICON(job.mode)}{MODE_LABEL[job.mode]}
-          </span>
-          {job.universal && (
-            <span className="job-card__chip" style={{ background: '#1a2a1a', borderColor: '#2a4a2a', color: '#4a9a4a' }}>
-              Any Rank
-            </span>
-          )}
-          {isLocked && (
-            <span className="job-card__chip" style={{ background: '#1a1a1a', borderColor: '#333', color: '#666' }}>
-              <Lock size={8} /> {RANK_DISPLAY[job.min_rank]}
-            </span>
-          )}
-          {onCooldown && !isLocked && (
-            <span className="job-card__chip" style={{ background: '#1a1a1a', borderColor: '#333', color: '#888' }}>
-              <Clock size={8} /> {formatCooldown(secsLeft)}
-            </span>
-          )}
-          {!onCooldown && !isLocked && (
-            <span className="job-card__chip" style={{ background: '#0a1a0a', borderColor: '#1a3a1a', color: '#4a9a4a' }}>
-              <Zap size={8} /> Ready
-            </span>
-          )}
-          {job.war_context_only && (
-            <span className="job-card__chip" style={{ background: '#3a0000', borderColor: '#5a0000', color: '#cc3333' }}>
-              WAR ONLY
-            </span>
-          )}
-          {job.hitman_eligible && !job.universal && (
-            <span className="job-card__chip" style={{ background: '#0d1020', borderColor: '#1e2840', color: '#5580bb' }}>
-              <Skull size={8} /> Hitman OK
-            </span>
-          )}
-        </div>
-
-        {/* Meta row: risk + cooldown */}
-        <div className="job-card__meta">
-          <span className="job-card__meta-item" style={{ color: riskColor, fontWeight: 600 }}>
-            {JAIL_RISK_DISPLAY[riskLabel]} risk
-          </span>
-          <span className="job-card__meta-item" style={{ color: '#555' }}>
-            <Clock size={10} /> {formatCooldown(job.cooldown_seconds)}
-          </span>
-        </div>
-
-        {/* Hitman banner */}
-        {job.hitman_eligible && !job.universal && canStart && (
-          <div className="job-card__hitman-banner">
-            <Skull size={11} />
-            <span>Optional Hitman slot available for increased success odds.</span>
           </div>
-        )}
-
-        {/* CTA row — full width, 48px tall */}
-        <div className="job-card__cta">
-          {isLocked ? (
-            <button
-              disabled
-              className="job-card__cta-btn"
-              style={{ background: '#111', borderColor: '#2a2a2a', color: '#555', cursor: 'not-allowed' }}
-            >
-              <Lock size={12} /> Locked — {RANK_DISPLAY[job.min_rank]} required
-            </button>
-          ) : onCooldown ? (
-            <button
-              disabled
-              className="job-card__cta-btn"
-              style={{ background: '#111', borderColor: '#2a2a2a', color: '#666', cursor: 'not-allowed', opacity: 0.7 }}
-            >
-              <Clock size={12} /> On Cooldown ({formatCooldown(secsLeft)})
-            </button>
-          ) : job.mode === 'SOLO' ? (
-            <button
-              onClick={() => onRun(job)}
-              className="job-card__cta-btn btn-primary"
-              style={{ background: 'rgba(204,51,51,0.12)', borderColor: 'rgba(204,51,51,0.35)', color: '#cc3333' }}
-              data-testid={`start-job-${job.id}`}
-            >
-              Start Job
-            </button>
-          ) : job.mode === 'CREW' ? (
-            <button
-              onClick={() => onRun(job)}
-              className="job-card__cta-btn btn-primary"
-              style={{ background: 'rgba(204,51,51,0.12)', borderColor: 'rgba(204,51,51,0.35)', color: '#cc3333' }}
-              data-testid={`start-job-${job.id}`}
-            >
-              <Users size={13} /> Invite Crew & Start
-            </button>
-          ) : (
-            <>
-              <button
-                onClick={() => onRun(job)}
-                className="job-card__cta-btn btn-primary"
-                style={{ background: 'rgba(204,51,51,0.12)', borderColor: 'rgba(204,51,51,0.35)', color: '#cc3333' }}
-                data-testid={`start-solo-${job.id}`}
-              >
-                Start Solo
-              </button>
-              <button
-                onClick={() => onRun(job)}
-                className="job-card__cta-btn btn-ghost"
-                style={{ background: 'transparent', borderColor: '#252525', color: '#888' }}
-                data-testid={`invite-start-${job.id}`}
-              >
-                <Users size={13} /> Invite →
-              </button>
-            </>
+          {/* Featured badge — top-right */}
+          {featured && (
+            <div style={{
+              position: 'absolute', top: '8px', right: '10px',
+              fontSize: '8px', fontWeight: '700', color: '#ffcc33',
+              display: 'flex', alignItems: 'center', gap: '3px',
+            }}>
+              <Star size={9} />
+            </div>
           )}
+          {/* Status badge — bottom-right */}
+          <div style={{ position: 'absolute', bottom: '8px', right: '10px' }}>
+            {isLocked ? (
+              <span style={{ fontSize: '8px', color: '#666', background: '#111', border: '1px solid #2a2a2a', padding: '2px 6px', borderRadius: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <Lock size={7} /> {RANK_DISPLAY[job.min_rank]}
+              </span>
+            ) : onCooldown ? (
+              <span style={{ fontSize: '8px', color: '#888', background: '#111', border: '1px solid #252525', padding: '2px 6px', borderRadius: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <Clock size={7} /> {formatCooldown(secsLeft)}
+              </span>
+            ) : (
+              <span style={{ fontSize: '8px', color: '#4a9a4a', background: '#0a1a0a', border: '1px solid #1a3a1a', padding: '2px 6px', borderRadius: '3px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                <Zap size={7} /> Ready
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* ── CARD BODY ────────────────────── */}
+        <div style={{ padding: '10px 14px 12px' }}>
+
+          {/* Title row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '3px' }}>
+            <span className="job-card__name" style={{ fontSize: '13px', fontWeight: '700', color: isLocked ? '#555' : '#e0e0e0', letterSpacing: '-0.01em', lineHeight: 1.25 }}>
+              {job.name}
+            </span>
+            <span style={{ fontSize: '12px', fontWeight: '700', color: '#ffcc33', flexShrink: 0, marginLeft: '8px' }}>
+              {rewardText}
+              {rewardSuffix && <span style={{ fontSize: '9px', color: '#888', marginLeft: '3px' }}>{rewardSuffix}</span>}
+            </span>
+          </div>
+
+          {/* Summary line */}
+          <div style={{ fontSize: '11px', color: '#777', lineHeight: '1.45', marginBottom: '8px' }}>
+            {narrative.summary}
+          </div>
+
+          {/* Expandable description */}
+          {expanded && (
+            <div style={{
+              fontSize: '11px', color: '#888', lineHeight: '1.65',
+              marginBottom: '10px', paddingTop: '8px',
+              borderTop: '1px solid #151515',
+              fontStyle: 'italic',
+            }}>
+              {narrative.flavor || job.description}
+            </div>
+          )}
+
+          {/* Meta row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '9px', color: riskColor, fontWeight: '600' }}>
+              {JAIL_RISK_DISPLAY[riskLabel]} risk
+            </span>
+            <span style={{ fontSize: '9px', color: '#444', display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <Clock size={9} /> {formatCooldown(job.cooldown_seconds)}
+            </span>
+            <span style={{ fontSize: '9px', color: '#444', display: 'flex', alignItems: 'center', gap: '3px' }}>
+              {MODE_ICON(job.mode)}<span style={{ marginLeft: '2px' }}>{MODE_LABEL[job.mode]}</span>
+            </span>
+            {job.universal && (
+              <span style={{ fontSize: '8px', color: '#4a9a4a', background: '#0a1a0a', border: '1px solid #1a3a1a', padding: '1px 5px', borderRadius: '2px' }}>Any Rank</span>
+            )}
+            {job.war_context_only && (
+              <span style={{ fontSize: '8px', color: '#cc3333', background: '#1a0000', border: '1px solid #3a0000', padding: '1px 5px', borderRadius: '2px' }}>WAR</span>
+            )}
+            {job.hitman_eligible && (
+              <span style={{ fontSize: '8px', color: '#5580bb', background: '#0d1020', border: '1px solid #1e2840', padding: '1px 5px', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Skull size={7} /> Hitman
+              </span>
+            )}
+            {/* Expand toggle */}
+            <button
+              onClick={() => setExpanded(e => !e)}
+              style={{
+                marginLeft: 'auto', background: 'none', border: 'none',
+                color: '#444', cursor: 'pointer', fontSize: '9px',
+                display: 'flex', alignItems: 'center', gap: '2px', padding: '0',
+              }}
+            >
+              {expanded ? 'Less' : 'Brief'}
+              {expanded ? <ChevronUp size={9} /> : <ChevronRight size={9} />}
+            </button>
+          </div>
+
+          {/* Hitman banner */}
+          {job.hitman_eligible && !job.universal && canStart && (
+            <div className="job-card__hitman-banner" style={{ marginBottom: '8px' }}>
+              <Skull size={11} />
+              <span>Optional Hitman slot available for increased success odds.</span>
+            </div>
+          )}
+
+          {/* CTA row */}
+          <div className="job-card__cta">
+            {isLocked ? (
+              <button disabled className="job-card__cta-btn"
+                style={{ background: '#111', borderColor: '#2a2a2a', color: '#555', cursor: 'not-allowed' }}>
+                <Lock size={12} /> {RANK_DISPLAY[job.min_rank]} required
+              </button>
+            ) : onCooldown ? (
+              <button disabled className="job-card__cta-btn"
+                style={{ background: '#111', borderColor: '#2a2a2a', color: '#666', cursor: 'not-allowed', opacity: 0.7 }}>
+                <Clock size={12} /> {formatCooldown(secsLeft)}
+              </button>
+            ) : job.mode === 'CREW' ? (
+              <button onClick={() => onRun(job)} className="job-card__cta-btn btn-primary"
+                style={{ background: 'rgba(204,51,51,0.12)', borderColor: 'rgba(204,51,51,0.35)', color: '#cc3333' }}
+                data-testid={`start-job-${job.id}`}>
+                <Users size={13} /> Assemble Crew
+              </button>
+            ) : job.mode === 'SOLO_OR_CREW' ? (
+              <>
+                <button onClick={() => onRun(job)} className="job-card__cta-btn btn-primary"
+                  style={{ background: 'rgba(204,51,51,0.12)', borderColor: 'rgba(204,51,51,0.35)', color: '#cc3333' }}
+                  data-testid={`start-solo-${job.id}`}>
+                  Run Solo
+                </button>
+                <button onClick={() => onRun(job)} className="job-card__cta-btn btn-ghost"
+                  style={{ background: 'transparent', borderColor: '#252525', color: '#888' }}
+                  data-testid={`invite-start-${job.id}`}>
+                  <Users size={13} /> Crew
+                </button>
+              </>
+            ) : (
+              <button onClick={() => onRun(job)} className="job-card__cta-btn btn-primary"
+                style={{ background: 'rgba(204,51,51,0.12)', borderColor: 'rgba(204,51,51,0.35)', color: '#cc3333' }}
+                data-testid={`start-job-${job.id}`}>
+                Run It
+              </button>
+            )}
+          </div>
+
         </div>
       </div>
     </div>

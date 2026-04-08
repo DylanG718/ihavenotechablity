@@ -99,7 +99,7 @@ async function getRealClient(): Promise<typeof _stub> {
         persistSession:    true,
         autoRefreshToken:  true,
         detectSessionInUrl: true,
-        storageKey:        'mafialife-auth',
+        storageKey:        'thelastfirm-auth',
       },
     }) as unknown as typeof _stub;
     return _client;

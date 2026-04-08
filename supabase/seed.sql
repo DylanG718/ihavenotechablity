@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Seed Data
+-- THE LAST FIRM — Seed Data
 -- Run after migrations to populate a fresh database.
 -- NOTE: player auth_user_id fields are left NULL in seed —
 --       they get linked when real Supabase auth users sign up.

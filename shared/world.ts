@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// MAFIALIFE — World Config Types
+// THE LAST FIRM — World Config Types
 // Covers: Districts, Turfs (world layer), Business Definitions,
 //         BusinessSlotDefinitions, BusinessExclusiveJobs, BusinessAssignments
 //
