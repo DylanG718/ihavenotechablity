@@ -109,3 +109,18 @@
     &:focus { @apply border-primary; }
   }
 }
+
+/* ─── JOB CARD STATE ANIMATIONS ──────────────────────────────── */
+
+@keyframes tlf-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+.job-card--cooldown .job-card__inner {
+  opacity: 0.85;
+}
+
+.job-card--locked .job-card__inner {
+  opacity: 0.72;
+}

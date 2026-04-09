@@ -288,3 +288,562 @@ export function getFeaturedJobs(
     })
     .slice(0, count);
 }
+
+// ─────────────────────────────────────────────
+// LOCK REASON SYSTEM
+// Plain-language lock reasons for the UI.
+// ─────────────────────────────────────────────
+
+export type LockReasonCode =
+  | 'RANK_TOO_LOW'
+  | 'WAR_CONTEXT_ONLY'
+  | 'HITMAN_ONLY'
+  | 'FAMILY_REQUIRED'
+  | 'ON_COOLDOWN'
+  | 'LOCATION_REQUIRED'    // placeholder — future expansion
+  | 'ITEM_REQUIRED'         // placeholder — future expansion
+  | 'STAT_REQUIREMENT'      // placeholder — future expansion
+  | 'WORLD_STATE';          // placeholder — future expansion
+
+export interface LockReason {
+  code: LockReasonCode;
+  /** Short label shown in badge, e.g. "Capo Required" */
+  label: string;
+  /** Full plain-language explanation shown in the locked-state panel */
+  explanation: string;
+  /** Whether this lock is temporary (can be resolved) vs permanent until rank-up */
+  temporary: boolean;
+}
+
+const RANK_LABEL_DISPLAY: Record<string, string> = {
+  ASSOCIATE:   'Associate',
+  SOLDIER:     'Soldier',
+  CAPO:        'Capo',
+  CONSIGLIERE: 'Consigliere',
+  UNDERBOSS:   'Underboss',
+  BOSS:        'Boss',
+};
+
+/**
+ * Returns the primary lock reason for a job, or null if the job is accessible.
+ * Checks in priority order: cooldown → rank gate → context restrictions.
+ * Cooldown is NOT considered a lock — it is a separate state handled by the card.
+ */
+export function getLockReason(
+  playerRole: FamilyRole | null,
+  job: JobDefinition,
+  jobState?: PlayerJobState
+): LockReason | null {
+  // Rank gate — primary lock
+  if (!canStartJob(playerRole, job)) {
+    const required = RANK_LABEL_DISPLAY[job.min_rank] ?? job.min_rank;
+    return {
+      code: 'RANK_TOO_LOW',
+      label: `${required} Required`,
+      explanation: `This operation requires ${required} rank or higher. Rise through the family to unlock it.`,
+      temporary: false,
+    };
+  }
+
+  // War context — only available during active family war
+  if (job.war_context_only) {
+    return {
+      code: 'WAR_CONTEXT_ONLY',
+      label: 'War Only',
+      explanation: 'This operation is only authorized during an active family war. Stand by.',
+      temporary: true,
+    };
+  }
+
+  return null;
+}
+
+// ─────────────────────────────────────────────
+// RISK PROFILE SYSTEM
+// Aggregated risk display for cards.
+// ─────────────────────────────────────────────
+
+export type RiskLevel = 'VERY_LOW' | 'LOW' | 'MEDIUM' | 'HIGH' | 'EXTREME';
+
+export interface RiskProfile {
+  /** Heat generated on success */
+  heat: RiskLevel;
+  /** Chance of arrest on failure */
+  jail: RiskLevel;
+  /** Crew viability — solo or needs backup */
+  solo: boolean;
+  /** True if job is hitman-eligible (high personal risk) */
+  highProfile: boolean;
+  /** Composite risk score 0–4 for color coding */
+  composite: 0 | 1 | 2 | 3 | 4;
+}
+
+export function getRiskProfile(job: JobDefinition): RiskProfile {
+  const jailRisk = jailRiskLabel(job.jail_chance_base);
+
+  // Heat is correlated to jail risk and tier
+  const heatScore =
+    job.jail_chance_base <= 0.04 ? 0 :
+    job.jail_chance_base <= 0.12 ? 1 :
+    job.jail_chance_base <= 0.25 ? 2 :
+    job.jail_chance_base <= 0.45 ? 3 : 4;
+
+  const heatLevel: RiskLevel[] = ['VERY_LOW', 'LOW', 'MEDIUM', 'HIGH', 'EXTREME'];
+  const heat = heatLevel[heatScore] as RiskLevel;
+
+  const jailScore =
+    jailRisk === 'VERY_LOW' ? 0 :
+    jailRisk === 'LOW'      ? 1 :
+    jailRisk === 'MEDIUM'   ? 2 :
+    jailRisk === 'HIGH'     ? 3 : 4;
+
+  const composite = Math.max(heatScore, jailScore) as 0 | 1 | 2 | 3 | 4;
+
+  return {
+    heat,
+    jail: jailRisk,
+    solo: job.mode !== 'CREW',
+    highProfile: job.hitman_eligible,
+    composite,
+  };
+}
+
+export const RISK_LEVEL_COLOR: Record<RiskLevel, string> = {
+  VERY_LOW: '#4a9a4a',
+  LOW:      '#6aaa4a',
+  MEDIUM:   '#cc9900',
+  HIGH:     '#cc5500',
+  EXTREME:  '#cc3333',
+};
+
+export const RISK_LEVEL_LABEL: Record<RiskLevel, string> = {
+  VERY_LOW: 'Minimal',
+  LOW:      'Low',
+  MEDIUM:   'Medium',
+  HIGH:     'High',
+  EXTREME:  'Critical',
+};
+
+// ─────────────────────────────────────────────
+// COOLDOWN PROGRESS
+// 0–1 float for arc/bar rendering.
+// ─────────────────────────────────────────────
+
+/** Returns 0 (just started) → 1 (fully ready). */
+export function cooldownProgress(state: PlayerJobState, job: JobDefinition): number {
+  const remaining = cooldownRemainingSeconds(state, job);
+  if (remaining <= 0) return 1;
+  return Math.max(0, 1 - remaining / job.cooldown_seconds);
+}
+
+/** True if cooldown is in final 20% — triggers visual urgency treatment */
+export function isNearReady(state: PlayerJobState, job: JobDefinition): boolean {
+  const progress = cooldownProgress(state, job);
+  return progress >= 0.8 && progress < 1;
+}
+
+/** Formats the wall-clock "available at" time */
+export function cooldownAvailableAt(state: PlayerJobState, job: JobDefinition): string {
+  const last = state.last_completed_at ?? state.last_failed_at;
+  if (!last) return '';
+  const available = new Date(new Date(last).getTime() + job.cooldown_seconds * 1000);
+  return available.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+// ═══════════════════════════════════════════════════════════
+// SORT / FILTER / RECOMMENDATION ENGINE
+// ═══════════════════════════════════════════════════════════
+
+// ─────────────────────────────────────────────
+// SORT
+// ─────────────────────────────────────────────
+
+export type SortKey =
+  | 'RECOMMENDED'     // default — composite score: ready × payout × archetype fit × low risk
+  | 'READY_FIRST'     // ready now → cooling down → locked; within group: by payout desc
+  | 'PAYOUT_HIGH'     // scaled reward_band_max desc
+  | 'RISK_LOW'        // jail_chance_base asc
+  | 'COOLDOWN_SHORT'  // cooldown_seconds asc (ready jobs first)
+  | 'XP_VALUE'        // tier desc (proxy for XP yield)
+  | 'CATEGORY_AZ';    // category alphabetical
+
+export interface SortOption {
+  key: SortKey;
+  label: string;
+}
+
+export const SORT_OPTIONS: SortOption[] = [
+  { key: 'RECOMMENDED',    label: 'Recommended'     },
+  { key: 'READY_FIRST',   label: 'Ready Now'        },
+  { key: 'PAYOUT_HIGH',   label: 'Highest Payout'   },
+  { key: 'RISK_LOW',      label: 'Lowest Risk'      },
+  { key: 'COOLDOWN_SHORT',label: 'Shortest Cooldown' },
+  { key: 'XP_VALUE',      label: 'Best Progression' },
+  { key: 'CATEGORY_AZ',   label: 'Category A–Z'     },
+];
+
+function getJobReadyScore(
+  job: JobDefinition,
+  playerRole: FamilyRole | null,
+  jobState: PlayerJobState | undefined
+): number {
+  if (!canStartJob(playerRole, job)) return 0; // locked
+  if (jobState && isOnCooldown(jobState, job)) return 1; // cooling
+  return 2; // ready
+}
+
+export function sortJobs(
+  jobs: JobDefinition[],
+  key: SortKey,
+  playerRole: FamilyRole | null,
+  jobStates: Record<string, PlayerJobState>,
+  archetype?: string
+): JobDefinition[] {
+  const arr = [...jobs];
+  switch (key) {
+    case 'READY_FIRST':
+      return arr.sort((a, b) => {
+        const ra = getJobReadyScore(a, playerRole, jobStates[a.id]);
+        const rb = getJobReadyScore(b, playerRole, jobStates[b.id]);
+        if (rb !== ra) return rb - ra;
+        return b.reward_band_max - a.reward_band_max;
+      });
+
+    case 'PAYOUT_HIGH':
+      return arr.sort((a, b) => {
+        const sa = getScaledRewardBand(a, playerRole);
+        const sb = getScaledRewardBand(b, playerRole);
+        return sb.max - sa.max;
+      });
+
+    case 'RISK_LOW':
+      return arr.sort((a, b) => {
+        // Ready jobs first, then by risk asc
+        const ra = getJobReadyScore(a, playerRole, jobStates[a.id]);
+        const rb = getJobReadyScore(b, playerRole, jobStates[b.id]);
+        if (rb !== ra) return rb - ra;
+        return a.jail_chance_base - b.jail_chance_base;
+      });
+
+    case 'COOLDOWN_SHORT':
+      return arr.sort((a, b) => {
+        const ra = getJobReadyScore(a, playerRole, jobStates[a.id]);
+        const rb = getJobReadyScore(b, playerRole, jobStates[b.id]);
+        if (rb !== ra) return rb - ra;
+        const remA = jobStates[a.id] ? cooldownRemainingSeconds(jobStates[a.id], a) : 0;
+        const remB = jobStates[b.id] ? cooldownRemainingSeconds(jobStates[b.id], b) : 0;
+        return remA - remB;
+      });
+
+    case 'XP_VALUE':
+      return arr.sort((a, b) => {
+        const ra = getJobReadyScore(a, playerRole, jobStates[a.id]);
+        const rb = getJobReadyScore(b, playerRole, jobStates[b.id]);
+        if (rb !== ra) return rb - ra;
+        return b.tier - a.tier;
+      });
+
+    case 'CATEGORY_AZ':
+      return arr.sort((a, b) => a.category.localeCompare(b.category));
+
+    case 'RECOMMENDED':
+    default:
+      return arr.sort((a, b) => {
+        const scoreA = getRecommendScore(a, playerRole, jobStates[a.id], archetype);
+        const scoreB = getRecommendScore(b, playerRole, jobStates[b.id], archetype);
+        return scoreB - scoreA;
+      });
+  }
+}
+
+// ─────────────────────────────────────────────
+// FILTER
+// ─────────────────────────────────────────────
+
+export type AvailabilityFilter = 'ALL' | 'READY' | 'COOLING' | 'LOCKED';
+export type RiskFilter = 'ALL' | 'LOW' | 'MEDIUM' | 'HIGH';
+
+export interface JobFilters {
+  availability: AvailabilityFilter;
+  risk: RiskFilter;
+  category: string;        // 'ALL' or category name
+  mode: string;            // 'ALL' | 'SOLO' | 'CREW' | 'SOLO_OR_CREW'
+  archetype: string;       // 'ALL' or archetype name
+  soloOnly: boolean;
+}
+
+export const DEFAULT_FILTERS: JobFilters = {
+  availability: 'ALL',
+  risk: 'ALL',
+  category: 'ALL',
+  mode: 'ALL',
+  archetype: 'ALL',
+  soloOnly: false,
+};
+
+export function countActiveFilters(f: JobFilters): number {
+  let n = 0;
+  if (f.availability !== 'ALL') n++;
+  if (f.risk !== 'ALL') n++;
+  if (f.category !== 'ALL') n++;
+  if (f.mode !== 'ALL') n++;
+  if (f.archetype !== 'ALL') n++;
+  if (f.soloOnly) n++;
+  return n;
+}
+
+export function applyFilters(
+  jobs: JobDefinition[],
+  filters: JobFilters,
+  playerRole: FamilyRole | null,
+  jobStates: Record<string, PlayerJobState>
+): JobDefinition[] {
+  return jobs.filter(job => {
+    // Availability
+    if (filters.availability !== 'ALL') {
+      const canStart = canStartJob(playerRole, job);
+      const onCD = jobStates[job.id] ? isOnCooldown(jobStates[job.id], job) : false;
+      if (filters.availability === 'READY'   && (!canStart || onCD)) return false;
+      if (filters.availability === 'COOLING' && (!onCD || !canStart)) return false;
+      if (filters.availability === 'LOCKED'  && canStart) return false;
+    }
+
+    // Risk
+    if (filters.risk !== 'ALL') {
+      const risk = jailRiskLabel(job.jail_chance_base);
+      if (filters.risk === 'LOW'    && !['VERY_LOW','LOW'].includes(risk)) return false;
+      if (filters.risk === 'MEDIUM' && risk !== 'MEDIUM') return false;
+      if (filters.risk === 'HIGH'   && !['HIGH','EXTREME'].includes(risk)) return false;
+    }
+
+    // Category
+    if (filters.category !== 'ALL' && job.category !== filters.category) return false;
+
+    // Mode
+    if (filters.mode !== 'ALL' && job.mode !== filters.mode) return false;
+
+    // Archetype fit
+    if (filters.archetype !== 'ALL') {
+      const fit = getArchetypeFit(job, filters.archetype);
+      if (fit === 'NONE') return false;
+    }
+
+    // Solo only
+    if (filters.soloOnly && job.mode === 'CREW') return false;
+
+    return true;
+  });
+}
+
+// ─────────────────────────────────────────────
+// ARCHETYPE → CATEGORY FIT TABLE
+// ─────────────────────────────────────────────
+
+export type ArchetypeFitLevel = 'STRONG' | 'GOOD' | 'NEUTRAL' | 'NONE';
+
+const ARCHETYPE_CATEGORY_FIT: Record<string, Record<string, ArchetypeFitLevel>> = {
+  EARNER: {
+    ECONOMY:   'STRONG', FENCING:    'STRONG', GAMBLING:   'STRONG',
+    HUSTLE:    'GOOD',   CONTRABAND: 'GOOD',   LOGISTICS:  'GOOD',
+    EXTORTION: 'NEUTRAL',CORRUPTION: 'NEUTRAL',INTEL:      'NEUTRAL',
+    ENFORCEMENT:'NONE',  INFLUENCE:  'NEUTRAL',SABOTAGE:   'NONE', SPECIAL: 'NEUTRAL',
+  },
+  MUSCLE: {
+    ENFORCEMENT:'STRONG',EXTORTION:  'STRONG', SABOTAGE:   'STRONG',
+    CONTRABAND: 'GOOD',  HUSTLE:     'GOOD',   SPECIAL:    'GOOD',
+    FENCING:    'NEUTRAL',GAMBLING:  'NEUTRAL',ECONOMY:    'NEUTRAL',
+    LOGISTICS:  'NEUTRAL',INTEL:     'NEUTRAL',CORRUPTION: 'NEUTRAL',INFLUENCE: 'NEUTRAL',
+  },
+  SHOOTER: {
+    ENFORCEMENT:'STRONG',SPECIAL:    'STRONG', SABOTAGE:   'STRONG',
+    EXTORTION:  'GOOD',  CONTRABAND: 'GOOD',
+    HUSTLE:     'NEUTRAL',FENCING:   'NEUTRAL',GAMBLING:   'NEUTRAL',
+    ECONOMY:    'NEUTRAL',LOGISTICS: 'NEUTRAL',INTEL:      'NEUTRAL',CORRUPTION:'NEUTRAL',INFLUENCE:'NEUTRAL',
+  },
+  SCHEMER: {
+    INTEL:      'STRONG',CORRUPTION: 'STRONG', INFLUENCE:  'STRONG',
+    ECONOMY:    'GOOD',  GAMBLING:   'GOOD',   HUSTLE:     'GOOD',
+    FENCING:    'NEUTRAL',LOGISTICS: 'NEUTRAL',EXTORTION:  'NEUTRAL',
+    CONTRABAND: 'NEUTRAL',ENFORCEMENT:'NONE',  SABOTAGE:   'NONE', SPECIAL: 'NEUTRAL',
+  },
+  RACKETEER: {
+    EXTORTION:  'STRONG',ECONOMY:    'STRONG', GAMBLING:   'STRONG',
+    FENCING:    'GOOD',  CONTRABAND: 'GOOD',   LOGISTICS:  'GOOD',  HUSTLE: 'GOOD',
+    ENFORCEMENT:'NEUTRAL',INTEL:     'NEUTRAL',CORRUPTION: 'NEUTRAL',
+    INFLUENCE:  'NEUTRAL',SABOTAGE:  'NEUTRAL',SPECIAL:    'NEUTRAL',
+  },
+  RUNNER: {
+    // Generalist — good at everything, strong at nothing specific
+    ECONOMY: 'GOOD', FENCING: 'GOOD', GAMBLING: 'GOOD', HUSTLE: 'GOOD',
+    LOGISTICS:'GOOD',EXTORTION:'GOOD',ENFORCEMENT:'NEUTRAL',INTEL:'NEUTRAL',
+    INFLUENCE:'NEUTRAL',CONTRABAND:'NEUTRAL',CORRUPTION:'NEUTRAL',SABOTAGE:'NEUTRAL',SPECIAL:'NEUTRAL',
+  },
+  HITMAN: {
+    SPECIAL:    'STRONG',ENFORCEMENT:'STRONG',
+    SABOTAGE:   'GOOD',  EXTORTION:  'GOOD',
+    FENCING:    'NEUTRAL',GAMBLING:  'NEUTRAL',ECONOMY:'NEUTRAL',HUSTLE:'NEUTRAL',
+    LOGISTICS:  'NEUTRAL',INTEL:     'NEUTRAL',CORRUPTION:'NEUTRAL',INFLUENCE:'NEUTRAL',CONTRABAND:'NEUTRAL',
+  },
+};
+
+export function getArchetypeFit(job: JobDefinition, archetype: string): ArchetypeFitLevel {
+  const table = ARCHETYPE_CATEGORY_FIT[archetype];
+  if (!table) return 'NEUTRAL';
+  // Hitman-eligible jobs get a bonus for HITMAN archetype
+  if (archetype === 'HITMAN' && job.hitman_eligible) return 'STRONG';
+  return table[job.category] ?? 'NEUTRAL';
+}
+
+// ─────────────────────────────────────────────
+// RECOMMENDATION ENGINE
+// ─────────────────────────────────────────────
+
+export interface JobRecommendation {
+  job: JobDefinition;
+  score: number;
+  reasons: string[];   // 1-3 short reason strings
+}
+
+/**
+ * Score 0–100 — higher = more recommended.
+ * Factors: ready state, archetype fit, payout, risk, cooldown recency
+ */
+export function getRecommendScore(
+  job: JobDefinition,
+  playerRole: FamilyRole | null,
+  jobState: PlayerJobState | undefined,
+  archetype?: string
+): number {
+  if (!canStartJob(playerRole, job)) return 0;
+
+  let score = 40; // base for unlocked jobs
+
+  // Ready bonus
+  const onCD = jobState ? isOnCooldown(jobState, job) : false;
+  if (!onCD) score += 30;
+  else {
+    // Partial bonus for near-ready
+    const prog = jobState ? cooldownProgress(jobState, job) : 0;
+    score += Math.round(prog * 10);
+  }
+
+  // Archetype fit
+  if (archetype) {
+    const fit = getArchetypeFit(job, archetype);
+    if (fit === 'STRONG')  score += 20;
+    else if (fit === 'GOOD') score += 10;
+    else if (fit === 'NONE') score -= 15;
+  }
+
+  // Payout: tier as proxy (1–5 → 0–10)
+  score += Math.round(job.tier * 2);
+
+  // Risk penalty (high risk = lower score for recommendation)
+  const risk = jailRiskLabel(job.jail_chance_base);
+  if (risk === 'VERY_LOW') score += 5;
+  else if (risk === 'LOW')  score += 2;
+  else if (risk === 'HIGH') score -= 5;
+  else if (risk === 'EXTREME') score -= 12;
+
+  return Math.max(0, Math.min(100, score));
+}
+
+/** Generates human-readable reason strings for a recommendation */
+export function getRecommendReasons(
+  job: JobDefinition,
+  playerRole: FamilyRole | null,
+  jobState: PlayerJobState | undefined,
+  archetype?: string,
+  playerHeat?: number
+): string[] {
+  const reasons: string[] = [];
+
+  // Readiness
+  const onCD = jobState ? isOnCooldown(jobState, job) : false;
+  if (!onCD) {
+    reasons.push('Ready now');
+  } else if (jobState && isNearReady(jobState, job)) {
+    reasons.push('Almost ready');
+  }
+
+  // Archetype fit
+  if (archetype) {
+    const fit = getArchetypeFit(job, archetype);
+    if (fit === 'STRONG') {
+      reasons.push(`Strong fit for ${archetype.charAt(0) + archetype.slice(1).toLowerCase()}`);
+    } else if (fit === 'GOOD') {
+      reasons.push(`Good fit for ${archetype.charAt(0) + archetype.slice(1).toLowerCase()}`);
+    }
+  }
+
+  // Risk level
+  const risk = jailRiskLabel(job.jail_chance_base);
+  if (risk === 'VERY_LOW') reasons.push('Minimal arrest risk');
+  else if (risk === 'LOW') reasons.push('Low heat risk');
+  else if (risk === 'HIGH') reasons.push('High risk — use caution');
+  else if (risk === 'EXTREME') reasons.push('Extreme risk');
+
+  // Heat context (if player heat is high, recommend low-risk jobs)
+  if (playerHeat !== undefined && playerHeat > 60 && job.jail_chance_base < 0.1) {
+    reasons.push('Safe while heat is high');
+  }
+
+  // Payout tier
+  const scaled = getScaledRewardBand(job, playerRole);
+  if (scaled.max >= 50000) reasons.push('Strong payout');
+  else if (scaled.max >= 10000) reasons.push('Good payout for your rank');
+
+  // Progression
+  if (job.tier >= 3) reasons.push('High progression value');
+  else if (job.tier >= 2) reasons.push('Good progression value');
+
+  // Trim to 3 most relevant
+  return reasons.slice(0, 3);
+}
+
+/** Returns top N recommended jobs with scores and reasons */
+export function getRecommendedJobs(
+  jobs: JobDefinition[],
+  playerRole: FamilyRole | null,
+  jobStates: Record<string, PlayerJobState>,
+  archetype?: string,
+  playerHeat?: number,
+  count = 4
+): JobRecommendation[] {
+  return jobs
+    .filter(j => canStartJob(playerRole, j))
+    .map(j => ({
+      job: j,
+      score: getRecommendScore(j, playerRole, jobStates[j.id], archetype),
+      reasons: getRecommendReasons(j, playerRole, jobStates[j.id], archetype, playerHeat),
+    }))
+    .filter(r => r.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, count);
+}
+
+// ─────────────────────────────────────────────
+// STATUS COUNTS — for the top summary bar
+// ─────────────────────────────────────────────
+
+export interface JobStatusCounts {
+  ready:   number;
+  cooling: number;
+  locked:  number;
+  total:   number;
+}
+
+export function getJobStatusCounts(
+  jobs: JobDefinition[],
+  playerRole: FamilyRole | null,
+  jobStates: Record<string, PlayerJobState>
+): JobStatusCounts {
+  let ready = 0, cooling = 0, locked = 0;
+  for (const job of jobs) {
+    if (!canStartJob(playerRole, job)) { locked++; continue; }
+    const s = jobStates[job.id];
+    if (s && isOnCooldown(s, job)) { cooling++; }
+    else { ready++; }
+  }
+  return { ready, cooling, locked, total: jobs.length };
+}

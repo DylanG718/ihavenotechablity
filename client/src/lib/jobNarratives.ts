@@ -706,12 +706,717 @@ const WAVE_2: Record<string, NarrativeEntry> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────
+// WAVE 3 — Narrative complete · Images complete
+// ─────────────────────────────────────────────────────────────────────
+
+const WAVE_3: Record<string, NarrativeEntry> = {
+
+  // ── RUN A CORNER NUMBERS SPOT (j-rank-01) ─────────────────────────
+  'j-rank-01': {
+    art_key: 'corner_numbers',
+    has_busted_image: false,
+    summary: 'Work the corner book from noon to dusk.',
+    flavor: 'Entry-level earning. A folding table, a coffee, and the afternoon shift on a corner that moves three hundred dollars on a slow day. Learn the rhythm before you run the whole operation.',
+    success: {
+      narratives: [
+        'Forty bets, no disputes, clean handoff at dusk. You are building a reputation for reliability.',
+        'The corner ran itself. Light traffic, solid take. You were back with the count before dark.',
+        'Nobody short-changed you and nobody made a scene. Smooth afternoon on the corner.',
+        'Small numbers, clean hands. The crew noticed you did not lose a dollar.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'A uniformed officer walked the block twice. You cleared the table and waited him out. Too late to restart.',
+        'Two bettors got into an argument over a disputed number. The crowd it drew ended the shift early.',
+        'The float came up twenty short. Either you miscounted or someone palmed it. Either way, it is your problem.',
+        'Pickup never came. You held the take for four hours and walked it home in the rain.',
+      ],
+    },
+  },
+
+  // ── RUN AN ERRAND FOR THE CREW (j-rank-04) ────────────────────────
+  'j-rank-04': {
+    art_key: 'crew_errand',
+    has_busted_image: false,
+    summary: 'Simple delivery. No questions. No delays.',
+    flavor: 'A sealed envelope needs to travel from a restaurant on Tenth Street to a private address three miles north. You do not know what is inside and you are not supposed to. You show up, you deliver, you leave.',
+    success: {
+      narratives: [
+        'Delivered in under forty minutes. No detours, no contact, no trace. Clean.',
+        'The recipient answered on the first knock. Took the envelope without a word. Done.',
+        'Nothing complicated happened. Which is exactly what they needed.',
+        'You were back before the coffee went cold. Reliable runners get called again.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The address was wrong. By the time you found the right building, the recipient had left.',
+        'Your route took you past a checkpoint that was not there yesterday. You turned around.',
+        'The contact did not answer. You waited forty minutes and had to return with the envelope.',
+        'Someone was watching the building. You assessed the situation and decided not to approach.',
+      ],
+    },
+  },
+
+  // ── EXTORT A LOCAL BUSINESS (j-rank-10) ───────────────────────────
+  'j-rank-10': {
+    art_key: 'extort_local',
+    has_busted_image: false,
+    summary: 'The dry cleaner on Fifth has never paid. Change that.',
+    flavor: 'Three years operating without contributing to the neighborhood arrangement. You make a single visit, explain how things work in this part of the city, and leave with either a commitment or a clear signal that a second visit will be necessary.',
+    success: {
+      narratives: [
+        'He understood the structure immediately. First payment next Friday, same time every week.',
+        'Cooperative from the moment you introduced the subject. He had been expecting this conversation.',
+        'Agreement reached. He will keep the arrangement quiet and so will you.',
+        'He paid the first month on the spot. Said he had been setting it aside just in case.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'His nephew is a cop. He mentioned it the way people mention the weather. You recalibrated.',
+        'He refused outright and said he would report any further contact. He meant it.',
+        'Two other businesses on the same block have a rival arrangement. The territory is contested.',
+        'He was already behind on a different debt to a different crew. Nothing available to collect.',
+      ],
+    },
+  },
+
+  // ── FENCE STOLEN GOODS MID-TIER (j-rank-12) ───────────────────────
+  'j-rank-12': {
+    art_key: 'fence_goods_mid',
+    has_busted_image: false,
+    summary: 'A trailer full of merchandise needs a new owner.',
+    flavor: 'Sixty units of high-end audio equipment, serial numbers removed, sitting in a warehouse that costs money every day it is occupied. Your fence takes the lot at a discount and moves it through three different buyers before the week is out.',
+    success: {
+      narratives: [
+        'Fence took the lot at fifty-five cents on the dollar without inspecting every unit. Cash on delivery.',
+        'Transfer completed in two runs. The warehouse is empty and the proceeds are in an envelope.',
+        'He did not negotiate. He knew the price was fair and so did you.',
+        'Clean handoff. He will have it distributed before any serial check triggers.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The fence backed out. Said the equipment was flagged in a law enforcement circular.',
+        'The warehouse landlord showed up unexpectedly for an inspection. You had to delay the handoff.',
+        'Your buyer had a capacity problem. He could only take twenty units this week.',
+        'The merchandise was damaged in transit. The fence reduced the offer below cost.',
+      ],
+    },
+  },
+
+  // ── BROKER A LABOR UNION DEAL (j-rank-24) ─────────────────────────
+  'j-rank-24': {
+    art_key: 'union_deal',
+    has_busted_image: false,
+    summary: 'Sit between the union rep and the contractor. Get the cut.',
+    flavor: 'A construction contract worth four million dollars is moving through city council. The union controls the workforce and the contractor controls the permit relationship. You are the one both sides need to make the arrangement official and quiet.',
+    success: {
+      narratives: [
+        'The intermediary fee was agreed to without negotiation. You are in the deal.',
+        'Both sides signed off. The contractor gets the workforce, the union gets their terms, and you get two percent.',
+        'Clean brokerage. The arrangement is documented in a way that describes nothing illegal.',
+        'Contract is moving. Your name appears nowhere in the paperwork.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'A federal oversight board audited the project before the arrangement was finalized. The window closed.',
+        'The contractor brought in their own intermediary. You were cut out before the first meeting.',
+        'The union rep wanted a larger percentage than either side was prepared to offer.',
+        'City council delayed the vote. The entire timeline collapsed and everyone walked away.',
+      ],
+    },
+  },
+
+  // ── COMPILE INTEL ON A RIVAL FAMILY (j-rank-31) ───────────────────
+  'j-rank-31': {
+    art_key: 'compile_intel',
+    has_busted_image: false,
+    summary: 'Build the complete picture on the Ferrante operation.',
+    flavor: 'Three weeks of passive surveillance, contact mapping, and financial pattern analysis. You compile everything into a single dossier — routes, schedules, weak points, and the names of people who might be persuadable.',
+    success: {
+      narratives: [
+        'The dossier is complete. Routes, schedules, three vulnerabilities, and one name worth a conversation.',
+        'Thorough intelligence delivered. The Consigliere read it twice and asked no follow-up questions.',
+        'Clean operation. No exposure, no counter-surveillance triggered, complete picture assembled.',
+        'Every contact mapped. The Ferrante schedule is predictable and you have three weeks of proof.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The Ferrante crew changed their route pattern after noticing unusual attention.',
+        'One of your surveillance contacts was recognized by a Ferrante associate. Operation compromised.',
+        'The intelligence gathered was incomplete. Key figures were not observed and the schedule had gaps.',
+        'Counter-surveillance detected the watch on their primary location. You pulled everyone back.',
+      ],
+    },
+  },
+
+  // ── ADVISE ON A HIGH-STAKES CONTRACT (j-rank-32) ──────────────────
+  'j-rank-32': {
+    art_key: 'advise_contract',
+    has_busted_image: false,
+    summary: 'Your read on the deal could cost or make the family millions.',
+    flavor: 'A Capo is about to commit family resources to a joint venture with a third-party operator. The terms are complicated and the operator has a history. You spend three days reviewing the structure before the papers get signed.',
+    success: {
+      narratives: [
+        'Your analysis identified a clause that would have transferred control at the eighteen-month mark. The Capo pulled out.',
+        'Clean assessment delivered. The deal was restructured on your terms.',
+        'You spotted the exposure early. The operator renegotiated when it was clear they had been read.',
+        'The contract was signed on terms the family controls. Your read was correct on every major point.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The deal moved before your analysis was complete. The papers were signed without your input.',
+        'Your assessment was disputed by the existing advisor. The conflicting advice cost more than the deal.',
+        'The operator had better legal representation than anticipated. The structure resisted renegotiation.',
+        'You missed a secondary clause that matters. It will become a problem at the twelve-month mark.',
+      ],
+    },
+  },
+
+  // ── CONSOLIDATE FAMILY RACKETS (j-rank-41) ────────────────────────
+  'j-rank-41': {
+    art_key: 'consolidate_rackets',
+    has_busted_image: false,
+    summary: 'Reorganize five overlapping rackets into one clean system.',
+    flavor: 'Five separate earners are running overlapping territory with inconsistent reporting and no coordination. You spend a week mapping conflicts, reassigning accounts, standardizing the take, and building a reporting chain that keeps money moving upward without friction.',
+    success: {
+      narratives: [
+        'Reorganization complete. Five rackets now report through two captains and the take increased by twelve percent.',
+        'The friction points are resolved. Every earner has defined territory and a clear reporting line.',
+        'Clean consolidation. No crew lost significant earning capacity and the family\'s net position improved.',
+        'System is running. The conflicts that cost money every week are documented, resolved, and assigned.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'Two earners refused the reassignment. The dispute required escalation before consolidation could continue.',
+        'The territory overlap was more complex than the map suggested. Three more weeks of work at minimum.',
+        'A rival crew exploited the reorganization window to move into a temporarily unassigned block.',
+        'The reporting structure broke down in the first week when a captain ignored the new chain.',
+      ],
+    },
+  },
+
+  // ── NEGOTIATE A WAR CEASEFIRE (j-rank-42) ─────────────────────────
+  'j-rank-42': {
+    art_key: 'war_ceasefire',
+    has_busted_image: false,
+    summary: 'Both sides are bleeding. You stop it today.',
+    flavor: 'Seven incidents in fourteen days. Two families at open war over a disputed port contract. The violence is attracting federal attention and costing both sides more than the contract is worth. You have thirty-six hours to get it done.',
+    success: {
+      narratives: [
+        'Ceasefire agreed. Thirty-day pause with binding arbitration on the port contract at day twenty.',
+        'Both sides stood down. The agreement was communicated to all crews within the hour.',
+        'Temporary peace secured. The violence stops and the negotiation begins.',
+        'The ceasefire holds. Both families returned to their primary earners and street pressure dropped immediately.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'An unauthorized incident occurred during the negotiation. The other side withdrew from the table.',
+        'The terms were rejected. The port contract dispute has a dimension you did not have access to.',
+        'A rogue element on your side moved before the agreement was finalized. The effort collapsed.',
+        'Federal surveillance of the meeting location was detected. Both sides scattered before terms were reached.',
+      ],
+    },
+  },
+
+  // ── FLIP A RIVAL CREW LIEUTENANT (j-rank-43) ──────────────────────
+  'j-rank-43': {
+    art_key: 'flip_lieutenant',
+    has_busted_image: false,
+    summary: 'Turn the number two in the Marchetti crew.',
+    flavor: 'The Marchetti lieutenant has been underpaid for three years and knows where the bodies are. Six weeks of cultivation through an intermediary have brought him to a meeting. Your job is to convert his dissatisfaction into a usable arrangement.',
+    success: {
+      narratives: [
+        'He is in. First intelligence delivery is scheduled for next week and the terms are clear.',
+        'The offer was accepted without counter-negotiation. He was ready before you finished the pitch.',
+        'Converted. He provides operational intelligence and you provide protection and a monthly retainer.',
+        'The arrangement is active. He already handed over the Marchetti meeting schedule for the next thirty days.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'He was already in a parallel conversation with a federal handler. Flipped the wrong direction.',
+        'He seemed interested until the last moment, then declined. His loyalty held under pressure.',
+        'The intermediary was compromised. The Marchetti crew knows about the approach.',
+        'He asked for terms the family cannot authorize.',
+      ],
+    },
+  },
+
+  // ── SEIZE A RIVAL TERRITORY (j-rank-50) ───────────────────────────
+  'j-rank-50': {
+    art_key: 'seize_territory',
+    has_busted_image: false,
+    summary: 'The Delacroix crew vacated. Move in before someone else does.',
+    flavor: 'Three blocks of prime collection territory became available when the Delacroix captain was arrested. The window is seventy-two hours. Move crew onto every active account and establish presence before any other family can organize a claim.',
+    success: {
+      narratives: [
+        'All three blocks registered under your family\'s name before any competing crew made contact.',
+        'Twelve accounts secured in forty-eight hours. The territory is operational and producing.',
+        'Clean acquisition. Every business accepted the transition without incident.',
+        'Territory secured. First collection under the new arrangement produced full payment on eleven of twelve accounts.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'A rival crew moved faster. By the time your people arrived, six accounts were already spoken to.',
+        'The Delacroix accounts had a loyalty that outlasted the arrest. Several refused to transfer.',
+        'Police presence on the block during the transition window made establishing contact impossible.',
+        'A third family entered the contested blocks simultaneously. The standoff required commission arbitration.',
+      ],
+    },
+  },
+
+  // ── ESTABLISH A NEW RACKET EMPIRE (j-rank-54) ─────────────────────
+  'j-rank-54': {
+    art_key: 'new_racket_empire',
+    has_busted_image: false,
+    summary: 'Four precincts, six crews, one coordinated system.',
+    flavor: 'You have the mandate to build a coordinated racket structure across four police precincts. The operation requires aligning six existing crews under a shared revenue model, establishing reporting protocols, and eliminating conflicts that have cost money for years.',
+    success: {
+      narratives: [
+        'The structure is live. Six crews reporting through two regional captains with clean upward flow.',
+        'Operational consolidation complete. The new model is producing fifteen percent above the fragmented baseline.',
+        'The architecture holds. Every precinct has a designated crew, defined territory, and clear reporting lines.',
+        'Empire established. The crews that were in conflict are now producing efficiently under a shared model.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'Two of the six crews refused the revenue sharing model. The structure cannot function with defectors.',
+        'A federal organized crime sweep launched during the consolidation phase. The coordination collapsed.',
+        'The reporting protocols broke down in the first week when captains began making unilateral decisions.',
+        'A territorial dispute between two designated crews undermined the entire framework before it stabilized.',
+      ],
+    },
+  },
+
+  // ── POKER NIGHT (j-univ-03) ───────────────────────────────────────
+  'j-univ-03': {
+    art_key: 'poker_night',
+    has_busted_image: false,
+    summary: 'Host the back-room game. House takes eight percent.',
+    flavor: 'Six regulars, a locked back room above a restaurant, and a minimum buy-in of three hundred. You run the table, manage the float, keep the atmosphere professional, and collect the house cut without anyone feeling managed.',
+    success: {
+      narratives: [
+        'Six hours, six players, and the house walked out with clean earnings. Nobody questioned the rake.',
+        'Two big spenders kept the action moving and the house percentage landed exactly where it should.',
+        'Clean game from start to finish. Every player left satisfied and two asked about next week.',
+        'The float balanced perfectly at close. Professional game, professional outcome.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'A player brought someone who did not belong. The vibe shifted and the table broke up early.',
+        'A dispute over a hand turned into something that needed resolving before it became public.',
+        'Three regulars did not show. The game barely covered the cost of the room.',
+        'Neighbors filed a noise complaint. You had to clear the table three hours before planned close.',
+      ],
+    },
+  },
+
+  // ── HORSE RACE FIX INFORMATION (j-univ-04) ────────────────────────
+  'j-univ-04': {
+    art_key: 'horse_fix',
+    has_busted_image: false,
+    summary: 'The fifth race is decided. Get the information placed correctly.',
+    flavor: 'You have reliable information about Saturday\'s fifth race. Getting the right money on the right horse through enough separate accounts to avoid flagging the odds requires coordination, discretion, and a forty-eight-hour window.',
+    success: {
+      narratives: [
+        'The action was placed cleanly across six accounts. The horse won and the payout was substantial.',
+        'Information used correctly. The odds barely moved and the return came in at a favorable ratio.',
+        'Forty-eight hours, clean execution, no flags from the track or the books.',
+        'The race went as expected. Proceeds collected before the track settled the books for the day.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The information was wrong. The horse ran third and the accounts took a loss.',
+        'Too much action moved on the race and the track flagged suspicious betting patterns.',
+        'One of the accounts used was under regulatory review. The bet drew attention to the whole structure.',
+        'The race was scratched due to a track condition. The window closed with nothing placed.',
+      ],
+    },
+  },
+
+  // ── DEMAND TRIBUTE FROM A STREET CREW (j-univ-07) ────────────────
+  'j-univ-07': {
+    art_key: 'demand_tribute',
+    has_busted_image: false,
+    summary: 'The independent crew on Archer Ave pays tonight.',
+    flavor: 'A small independent crew has been operating on Archer Avenue for eight months without acknowledging the neighborhood structure. Tonight you make contact, explain the hierarchy, and return with either a commitment or clarity about what comes next.',
+    success: {
+      narratives: [
+        'They understood the situation immediately. First tribute payment in an envelope before the conversation ended.',
+        'The crew leader shook your hand and agreed to monthly payments. He had been expecting this.',
+        'No resistance. They recognized the authority and committed to the arrangement on first contact.',
+        'Tribute established. They pay on the first of the month and stay out of territory that is not theirs.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The crew has a silent backing arrangement with a larger family. The leverage calculation changed on the spot.',
+        'They refused and made clear they had the numbers to back it up. This requires a different approach.',
+        'The crew leader was not present and his people would not negotiate without him. Try again.',
+        'They stalled with a partial offer that does not reflect the actual arrangement.',
+      ],
+    },
+  },
+
+  // ── COLLECT INSURANCE FRAUD CUT (j-univ-08) ───────────────────────
+  'j-univ-08': {
+    art_key: 'insurance_fraud',
+    has_busted_image: false,
+    summary: "The adjuster settled three claims. Collect the family's cut.",
+    flavor: 'An insurance adjuster on the family payroll has processed three fraudulent claims this month. Your job is to collect the arranged percentage before the proceeds are spent on something they should not be spent on.',
+    success: {
+      narratives: [
+        'Three envelopes, three payments, clean collection. The adjuster stays on the arrangement.',
+        'He had the money ready. Reliable earner. The family\'s cut came through without a discussion.',
+        'Collection completed before noon. The adjuster is current and the arrangement continues.',
+        'Clean pickup. He is motivated to stay on the right side of this and it shows.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The adjuster is under an internal audit at his firm. He cannot move money until it resolves.',
+        'One of the claims was flagged for review by the insurer\'s fraud department. Everything is frozen.',
+        'He paid partial and said the rest would follow next week. It will need to be enforced.',
+        'The adjuster has a new supervisor who reviews all settlements personally.',
+      ],
+    },
+  },
+
+  // ── MOVE STOLEN ELECTRONICS (j-univ-09) ──────────────────────────
+  'j-univ-09': {
+    art_key: 'stolen_electronics',
+    has_busted_image: false,
+    summary: 'Forty units in a van. Find them a home before morning.',
+    flavor: 'Forty laptops need to be moved through a buyer tonight. Your contact takes electronics without questions. The arrangement requires delivery before 2 AM and payment in cash at the handoff.',
+    success: {
+      narratives: [
+        'All forty units delivered and counted by the buyer before midnight. Cash in hand before the van left.',
+        'Clean transaction. He bought the lot at the agreed price without inspecting every unit.',
+        'Delivered in one run. The buyer was satisfied and flagged interest in more.',
+        'Handoff complete. Nobody on the block knew what was in the van.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The buyer backed out an hour before delivery. Said his storage situation had changed.',
+        'A patrol car ran the van plate at a light. You changed the route and ran out of time.',
+        'The serial numbers were flagged in a recent theft report the buyer had seen.',
+        'The van broke down four blocks from the delivery point. The operation had to be abandoned.',
+      ],
+    },
+  },
+
+  // ── MOVE COUNTERFEIT GOODS (j-univ-11) ───────────────────────────
+  'j-univ-11': {
+    art_key: 'counterfeit_goods',
+    has_busted_image: false,
+    summary: 'Three hundred units of counterfeit product. Move them quietly.',
+    flavor: 'Counterfeit luxury goods packed into shipping boxes labeled as wholesale accessories. Your distribution contact takes the lot and breaks it down through street vendors across four neighborhoods. Clean margin, low contact, steady operation.',
+    success: {
+      narratives: [
+        'Three hundred units distributed across four contact points. The proceeds will come in over the next ten days.',
+        'Clean movement. The distributor took delivery without incident and the product is already in the network.',
+        'Smooth handoff. The contact had buyers lined up and the goods were moving before you were on the highway.',
+        'Full lot transferred. The distributor confirmed placement and the family\'s cut is on schedule.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'Customs ran a sweep of the storage facility where the goods were staged.',
+        'The distributor could only take half. The remainder needs a second buyer and a second window.',
+        'A luxury brand investigator is working the neighborhood. Timing is off.',
+        'The goods were lower quality than the price point supported. The distributor renegotiated down.',
+      ],
+    },
+  },
+
+  // ── RUN BOOTLEG LIQUOR (j-univ-12) ───────────────────────────────
+  'j-univ-12': {
+    art_key: 'bootleg_liquor',
+    has_busted_image: false,
+    summary: 'The bars on Meridian pay less for liquor with no tax stamp.',
+    flavor: 'Four bars on Meridian Avenue take their well liquor from a warehouse that charges fifty cents on the dollar. You manage the delivery schedule, collect payment, and make sure the bar owners understand the quiet nature of the arrangement.',
+    success: {
+      narratives: [
+        'Four deliveries, four payments, no complications. The bars are stocked and the family is paid.',
+        'Clean distribution run. Every bar owner was cooperative and the volume held at the agreed level.',
+        'The route is reliable. These four accounts have been consistent for six months and tonight was no different.',
+        'Delivery complete. The arrangement continues to run cleanly on both sides.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'A liquor control inspector made a surprise visit to one of the bars during the delivery window.',
+        'Two of the four bars are switching to a licensed distributor after a warning from their attorneys.',
+        'The warehouse product failed a quality check. One bar owner refused the delivery.',
+        'The delivery driver is under investigation for an unrelated matter. You had to abort the route.',
+      ],
+    },
+  },
+
+  // ── SMUGGLE CIGARETTES (j-univ-13) ───────────────────────────────
+  'j-univ-13': {
+    art_key: 'smuggle_cigarettes',
+    has_busted_image: false,
+    summary: 'A truckload of untaxed cigarettes crosses the state line tonight.',
+    flavor: 'Untaxed cigarettes purchased at low-tax state prices and sold through corner stores at a margin that beats every licensed distributor. The truck makes one crossing and the product gets broken down across four warehouses before morning.',
+    success: {
+      narratives: [
+        'The truck crossed without incident and the product is staged for distribution. Clean crossing.',
+        'No stops, no inspections, clean route all the way. Product in the warehouse by 3 AM.',
+        'Successful run. Four warehouses loaded before the morning shift. The distribution network is supplied.',
+        'The border crossing was routine. Driver was clean and the cargo was manifested correctly.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'A random inspection checkpoint was set up on the primary crossing route. The truck turned around.',
+        'The manifest did not match the cargo at a weigh station. The driver pulled the truck and called in.',
+        'One of the staging warehouses was under surveillance from an unrelated operation.',
+        'The product was damaged in transit. Too much was lost to make the run profitable.',
+      ],
+    },
+  },
+
+  // ── LOAN MONEY OUT — NEW ACCOUNT (j-univ-15) ──────────────────────
+  'j-univ-15': {
+    art_key: 'new_loan_account',
+    has_busted_image: false,
+    summary: 'Open a new account. Terms are clear. So are the consequences.',
+    flavor: 'A restaurant owner needs eight thousand dollars in forty-eight hours and cannot use a bank. You meet him, assess the risk, set the weekly interest rate, and put the cash in his hand with a clear verbal understanding about what happens if he misses a payment.',
+    success: {
+      narratives: [
+        'Account opened. Eight thousand out, terms agreed, first payment date confirmed.',
+        'Clean origination. He needed the money and accepted the terms without negotiating the rate down.',
+        'New account active. The borrower signed the informal acknowledgment and received the full amount.',
+        'The account is on the book. He was grateful enough that the conversation about consequences was unnecessary.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'He reconsidered at the last moment. Said he found another solution. The cash never moved.',
+        'His financial situation was worse than he described. The risk assessment came back unfavorable.',
+        'He wanted a rate lower than the book supports. The conversation ended without an agreement.',
+        'A previous bad account in the same neighborhood has made new originations inadvisable.',
+      ],
+    },
+  },
+
+  // ── BLACK MARKET DEAL (j-univ-16) ────────────────────────────────
+  'j-univ-16': {
+    art_key: 'black_market',
+    has_busted_image: false,
+    summary: 'Broker the deal. Buyer and seller never meet.',
+    flavor: 'A buyer wants restricted materials. A seller has them. Neither party can make direct contact without exposure. You are the trusted intermediary who manages the exchange and takes a percentage for the operational risk you absorb.',
+    success: {
+      narratives: [
+        'Exchange completed cleanly. Both parties are satisfied and you never appeared in the same place as the goods.',
+        'Deal closed without incident. Your cut is in the envelope and both parties have what they came for.',
+        'Clean brokerage. The exchange took eleven minutes and both principals were gone before it registered.',
+        'Successful deal. You controlled the meeting, managed the handoff, and exited without exposure.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The buyer brought a third party who had not been vetted. The seller walked before the exchange.',
+        'The goods were not what the seller represented. The buyer refused delivery and both sides blamed you.',
+        'A surveillance team was running an operation on the buyer. You walked.',
+        'The location was compromised before the meeting. You called it off and the deal collapsed.',
+      ],
+    },
+  },
+
+  // ── CASH A STOLEN CHECK (j-univ-17) ──────────────────────────────
+  'j-univ-17': {
+    art_key: 'stolen_check',
+    has_busted_image: false,
+    summary: 'The check is real. The endorsement is not. Cash it clean.',
+    flavor: 'A stolen payroll check for four thousand dollars needs to become cash before the account freeze propagates to the check-cashing network. Three locations, a reliable ID, and a twenty-four-hour window.',
+    success: {
+      narratives: [
+        'All three stops completed. Check cashed across split amounts with no flags at any location.',
+        'Clean conversion. The freeze had not propagated to the network yet and the timing worked.',
+        'The ID held at all three locations. Cash in hand before noon.',
+        'Completed in the window. The account freeze hit six hours after the last location was done.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The account freeze was faster than expected. The first location declined and the ID raised questions.',
+        'The check amount triggered automatic verification at the second stop. You walked before it completed.',
+        'A familiar face was working the desk at the main location. The risk assessment ended the operation.',
+        'The network had already flagged the check number. None of the three locations would process it.',
+      ],
+    },
+  },
+
+  // ── SKIM A LEGITIMATE BUSINESS (j-univ-18) ───────────────────────
+  'j-univ-18': {
+    art_key: 'skim_business',
+    has_busted_image: false,
+    summary: 'The car wash on Delancey has been skimming for the family for two years.',
+    flavor: 'Monthly visit to collect the undeclared cash percentage from a legitimate business that runs double books. The owner cooperates because the alternative was explained two years ago. You verify the number, take the envelope, and report back.',
+    success: {
+      narratives: [
+        'Full monthly skim collected without discussion. The owner was current and professionally cooperative.',
+        'Clean pickup. The envelope was on the desk before you sat down.',
+        'The books match the arrangement. Skim is healthy and the owner continues to perform.',
+        'Reliable account. Two years without a missed payment and tonight was no exception.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'An IRS audit is currently running on the business. The owner cannot move undeclared cash right now.',
+        'The business had a slow month and the owner is asking to defer. This requires a decision from above.',
+        'A new business partner was brought in without notification. He does not know about the arrangement.',
+        'The owner is selling. The new buyers take possession in thirty days and nothing transfers.',
+      ],
+    },
+  },
+
+  // ── RECRUIT AN INFORMANT (j-univ-19) ─────────────────────────────
+  'j-univ-19': {
+    art_key: 'recruit_informant',
+    has_busted_image: false,
+    summary: 'Convert a civilian contact into a reliable source.',
+    flavor: 'A building supervisor at a courthouse handles mail and knows faces. Cultivated over four months, he is at the stage where a direct offer can be made. A modest monthly payment for minor information — a reliable inside connection, not a co-conspirator.',
+    success: {
+      narratives: [
+        'He accepted. Monthly payment established and the first piece of useful information was delivered same day.',
+        'The offer was calibrated correctly. He did not feel like he was crossing a line he cannot walk back.',
+        'Informant recruited. Low-risk, consistent, reliable. Exactly what was needed from that position.',
+        'He is in. The relationship is formalized and the intelligence will flow quietly each week.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'He refused and reported the approach to building security. The contact is now burned.',
+        'He seemed interested then went quiet. The approach was too direct and the cultivation was not complete.',
+        'He was already cooperating with a law enforcement contact. The conversation ended quickly.',
+        'His position was transferred before the offer could be made. The access is gone.',
+      ],
+    },
+  },
+
+  // ── INTIMIDATE A BUSINESS INTO SILENCE (j-univ-21) ───────────────
+  'j-univ-21': {
+    art_key: 'intimidate_silence',
+    has_busted_image: false,
+    summary: 'The hardware store owner saw something he should not have remembered.',
+    flavor: 'The hardware store owner on Clement Street made a statement to a detective last Thursday about a vehicle near an incident. You visit him and help him understand why his memory of that detail might not be reliable.',
+    success: {
+      narratives: [
+        'He called his attorney the next morning and withdrew the statement. Cited uncertainty about what he saw.',
+        'A brief conversation was sufficient. He looked appropriately uncertain about what he thought he saw.',
+        'The detective called it an unreliable witness. The statement lost its value.',
+        'He will not testify to anything specific. Short, professional, persuasive.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'He had already given a recorded statement the night before. Your visit changed nothing.',
+        'His adult son was in the store and the son was not cooperative. The conversation did not happen.',
+        'He called the police immediately after you left. The visit became its own incident.',
+        'Two detectives were running surveillance on his block. You assessed the situation and did not approach.',
+      ],
+    },
+  },
+
+  // ── GREASE A COP (j-univ-22) ─────────────────────────────────────
+  'j-univ-22': {
+    art_key: 'grease_cop',
+    has_busted_image: false,
+    summary: 'The sergeant on the night shift needs to look the other way.',
+    flavor: 'A sergeant at the 9th Precinct controls patrol routing on Tuesday nights. Three Tuesdays from now, a delivery needs to go through his sector without a traffic stop. You arrange a meeting and make an offer he can accept without asking what it is for.',
+    success: {
+      narratives: [
+        'He accepted without asking questions. Tuesday routes will clear the corridor without incident.',
+        'The offer was right-sized. He took it professionally and the route is clear for the next three Tuesdays.',
+        'Arrangement confirmed. He has been in this position before and he knows how it works.',
+        'Clean payment. He received the envelope and the patrol schedule will accommodate the operation.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'He is under an internal affairs review that was opened last week. Untouchable for now.',
+        'He refused on principle. Some of them still have it and he happened to be one of them.',
+        'He was interested but the timing is wrong. He suggested six weeks and that does not work.',
+        'He was already on the payroll of a competing operation. The sector is not available.',
+      ],
+    },
+  },
+
+  // ── VANDALIZE A RIVAL'S BUSINESS (j-univ-23) ─────────────────────
+  'j-univ-23': {
+    art_key: 'vandalize_rival',
+    has_busted_image: false,
+    summary: 'Send a message without sending a message.',
+    flavor: 'The Reyes crew has been making inquiries in territory they do not operate in. A targeted act of property damage at one of their front businesses communicates displeasure without requiring a confrontation — if executed without witnesses or connection back to you.',
+    success: {
+      narratives: [
+        'Clean operation. The message was delivered without cameras, witnesses, or traceable materials.',
+        'No exposure. The Reyes front had its windows replaced and their crew was noticeably quieter the following week.',
+        'Executed without incident. The point was made and the inquiry into your territory stopped.',
+        'Clean message sent. No attribution, no evidence, one less crew making noise in the wrong neighborhood.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'A security camera that was not on the plan captured the approach. The footage was reviewed next morning.',
+        'A resident saw two of your crew leaving the area and described them to a responding officer.',
+        'The operation was aborted when a patrol car made an unscheduled pass through the block.',
+        'The wrong property was targeted. The Reyes crew does not own that building. Complication.',
+      ],
+    },
+  },
+
+  // ── RUN AN ERRAND FOR THE BOSS (j-univ-24) ───────────────────────
+  'j-univ-24': {
+    art_key: 'boss_errand',
+    has_busted_image: false,
+    summary: 'When the boss asks, you move.',
+    flavor: 'A sealed package needs to travel from the boss\'s private residence to a business address forty minutes south. You are told nothing about the contents or the purpose. You are told to be discreet, use the secondary vehicle, and confirm delivery with a single text message.',
+    success: {
+      narratives: [
+        'Delivered, confirmed, returned. The boss received the text and sent nothing back, which means it was correct.',
+        'Clean delivery. The recipient said nothing and you asked nothing. The package changed hands.',
+        'Completed without incident. These are the errands that build the kind of trust money cannot buy.',
+        'Smooth execution. Nobody on either end of the transfer spoke more than four words. Exactly right.',
+      ],
+    },
+    failure: {
+      narratives: [
+        'The recipient was not at the address. You held the package and returned without completing the delivery.',
+        'You were followed for three blocks before the tail dropped off. The delivery was aborted as a precaution.',
+        'The secondary vehicle had registration issues at a traffic stop. You had to handle that first.',
+        'The address had changed and your contact information was out of date. Confirmation never sent.',
+      ],
+    },
+  },
+
+};
+
+// ─────────────────────────────────────────────────────────────────────
 // REGISTRY — combined lookup
 // ─────────────────────────────────────────────────────────────────────
 
 export const JOB_NARRATIVES: Record<string, NarrativeEntry> = {
   ...WAVE_1,
   ...WAVE_2,
+  ...WAVE_3,
 };
 
 // Placeholder stub for any job not yet in the narrative registry
