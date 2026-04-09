@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — SQL RPC Functions
+-- THE LAST FIRM — SQL RPC Functions
 -- Migration: 003_rpc_functions.sql
 --
 -- All functions use SECURITY DEFINER so they run with elevated privileges

@@ -90,7 +90,7 @@ function LoadingScreen() {
       fontFamily: "'Helvetica Now Display', Helvetica, Arial, sans-serif",
     }}>
       <div style={{ fontSize: '24px', fontWeight: '900', color: '#cc3333', letterSpacing: '-0.02em' }}>
-        MAFIALIFE
+        THE LAST FIRM
       </div>
       <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
         {[0, 1, 2].map(i => (

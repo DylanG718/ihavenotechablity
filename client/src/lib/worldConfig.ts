@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// MAFIALIFE — World Config: Districts, Turfs, Business Definitions
+// THE LAST FIRM — World Config: Districts, Turfs, Business Definitions
 //             + BusinessSlotDefinitions + BusinessExclusiveJobs
 //             + BusinessAssignment dev seeds
 //

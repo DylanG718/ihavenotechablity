@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Initial Database Schema
+-- THE LAST FIRM — Initial Database Schema
 -- Migration: 001_initial_schema.sql
 --
 -- Conventions:

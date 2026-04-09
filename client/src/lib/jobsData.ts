@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// MAFIALIFE — Jobs Seed Data
-// Source: MafiaLife Complete Jobs & Missions Design Bible v2
+// THE LAST FIRM — Jobs Seed Data
+// Source: The Last Firm Complete Jobs & Missions Design Bible v2
 //         + Universal Jobs (Any Rank) spec
 //
 // HOW TO ADD A JOB:

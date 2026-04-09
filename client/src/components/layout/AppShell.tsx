@@ -51,7 +51,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             ☰
           </button>
-          <span className="ml-topbar-logo">MafiaLife</span>
+          <span className="ml-topbar-logo">The Last Firm</span>
         </div>
         <div className="ml-topbar-right">
           <span className="ml-topbar-round">Round ends: <strong style={{ color: '#ffcc33' }}>4d 13h</strong></span>

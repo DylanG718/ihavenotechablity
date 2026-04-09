@@ -1,4 +1,4 @@
-# MafiaLife — Mobile-First UX Pass — Design Notes
+# The Last Firm — Mobile-First UX Pass — Design Notes
 
 **Date:** April 2026  
 **Scope:** Layout, hierarchy, spacing, and interaction pass on 5 core pages.  

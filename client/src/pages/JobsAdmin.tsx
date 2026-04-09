@@ -1,5 +1,5 @@
 /**
- * MafiaLife — DEV: Job Catalog Admin View
+ * The Last Firm — DEV: Job Catalog Admin View
  *
  * Lists all jobs in the database with:
  *  - id, name, rank requirement, category, tier, mode

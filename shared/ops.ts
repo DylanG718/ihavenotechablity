@@ -325,7 +325,7 @@ export interface OnboardingState {
 }
 
 export const ONBOARDING_STEP_LABELS: Record<OnboardingStep, string> = {
-  INTRO:                      'Welcome to MafiaLife',
+  INTRO:                      'Welcome to The Last Firm',
   ARCHETYPE_CHOICE:           'Choose Your Archetype',
   FAMILY_PATH_CHOICE:         'Your Path',
   FIRST_JOB:                  'Your First Job',

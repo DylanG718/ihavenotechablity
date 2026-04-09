@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// MAFIALIFE — World Seed Data
+// THE LAST FIRM — World Seed Data
 // Covers: Crews, FrontInstances, DistrictInfluence, Seasons,
 //         LeaderboardSnapshots, and helper functions
 // ═══════════════════════════════════════════════════════════════════

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- MAFIALIFE — Migration: 004_family_systems.sql
+-- THE LAST FIRM — Migration: 004_family_systems.sql
 --
 -- Implements:
 --   - Boss archetype → Runner archetype migration

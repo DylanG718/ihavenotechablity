@@ -183,7 +183,7 @@ export default function ArchetypeSelect() {
       {/* Header */}
       <div style={{ background: '#151515', borderBottom: '1px solid #000', padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#ffcc33' }}>MafiaLife</span>
+          <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#ffcc33' }}>The Last Firm</span>
           <span style={{ fontSize: '10px', color: '#888', marginLeft: '12px' }}>Character Creation — Choose Your Archetype</span>
         </div>
         <span style={{ fontSize: '10px', color: '#555' }}>Step 1 of 1</span>

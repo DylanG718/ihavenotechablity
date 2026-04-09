@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════
-// MAFIALIFE — Economy & Meta Systems
+// THE LAST FIRM — Economy & Meta Systems
 // Canonical data models for all economy subsystems.
 // Mocked data only. Backend-ready structure.
 // ═══════════════════════════════════════════════

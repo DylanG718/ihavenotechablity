@@ -1,5 +1,5 @@
 /**
- * MafiaLife — Front Detail
+ * The Last Firm — Front Detail
  * Route: /front/:frontId
  *
  * Shows P&L, staffing, exclusive jobs, and upgrade path for a specific front.
