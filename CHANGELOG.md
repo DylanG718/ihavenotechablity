@@ -2,6 +2,33 @@
 
 ---
 
+## [1.2.0] — 2026-04-09
+
+### Onboarding + Archetype Visuals
+
+**9 painterly editorial images integrated into the live onboarding flow**
+
+- 6 onboarding scene images (9:16 format, same art direction as jobs)
+- 3 archetype hero images: Earner (private club, financial authority), Muscle (garage doorway, physical presence), Hitman (car interior, patient observation)
+- All images: painterly impressionist oil-on-canvas, smear-face rule, no readable features
+
+**Onboarding INTRO step upgrade**
+- Full-bleed `HeroImagePanel` component with gradient overlay and text slot
+- "Old money. New crime. Quiet power." headline over the world-intro image
+- Improved supporting copy and gold italic quote
+
+**Archetype selection upgrade**
+- Archetype cards (Earner, Muscle, Hitman) now show 100/140px hero image thumbnails with gradient + name overlay
+- Text fallback for Runner/Shooter/Schemer/Racketeer (no hero images yet)
+- Detail panel (bottom sheet) now opens with 240px hero image at top, name overlaid in gradient, close button in image corner
+- Graceful `onError` fallback on all images
+
+**Known issues (non-blocking)**
+- 4 archetypes (Runner/Shooter/Schemer/Racketeer) still use text-only cards
+- Onboarding images 2–6 not yet wired to remaining steps
+
+---
+
 ## [1.1.0] — 2026-04-08
 
 ### Jobs System — Cards · States · Sort / Filter / Recommendations

@@ -8,7 +8,7 @@
  * Mobile-first. Progressive disclosure. No info walls.
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { ARCHETYPES } from '../lib/archetypes';
 import { useGame } from '../lib/gameContext';
@@ -21,6 +21,30 @@ import {
   FOUNDER_ONBOARDING_STEPS,
   ONBOARDING_STEP_LABELS,
 } from '../../../shared/ops';
+
+// ─────────────────────────────────────────────
+// Onboarding image paths
+// ─────────────────────────────────────────────
+
+const OB_IMG = {
+  world:     '/assets/onboarding/TLF_ONBOARDING_01_WORLD.png',
+  identity:  '/assets/onboarding/TLF_ONBOARDING_02_IDENTITY.png',
+  archetype: '/assets/onboarding/TLF_ONBOARDING_03_ARCHETYPE.png',
+  firstJob:  '/assets/onboarding/TLF_ONBOARDING_04_FIRSTJOB.png',
+  family:    '/assets/onboarding/TLF_ONBOARDING_05_FAMILY.png',
+  city:      '/assets/onboarding/TLF_ONBOARDING_06_CITY.png',
+} as const;
+
+const ARCH_IMG: Record<string, string> = {
+  EARNER:  '/assets/archetypes/TLF_ARCHETYPE_EARNER.png',
+  MUSCLE:  '/assets/archetypes/TLF_ARCHETYPE_MUSCLE.png',
+  HITMAN:  '/assets/archetypes/TLF_ARCHETYPE_HITMAN.png',
+};
+
+/** Returns the hero image for an archetype, or null if none exists */
+function getArchImage(type: string): string | null {
+  return ARCH_IMG[type] ?? null;
+}
 
 // ─────────────────────────────────────────────
 // Types
@@ -183,20 +207,85 @@ function CTA({ label, onClick, secondary = false }: { label: string; onClick: ()
 // Step: INTRO
 // ─────────────────────────────────────────────
 
+// Full-bleed hero image panel — used for INTRO and other cinematic steps
+function HeroImagePanel({
+  src,
+  children,
+  objectPosition = 'center top',
+}: {
+  src: string;
+  children: React.ReactNode;
+  objectPosition?: string;
+}) {
+  return (
+    <div style={{
+      position: 'relative',
+      width: '100%',
+      borderRadius: '8px',
+      overflow: 'hidden',
+      marginBottom: '24px',
+      // On mobile, take most of viewport height. On desktop, cap at 480px.
+      height: 'min(62vh, 480px)',
+      background: '#0a0a0a',
+    }}>
+      <img
+        src={src}
+        alt=""
+        loading="eager"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition,
+          display: 'block',
+        }}
+        onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+      />
+      {/* Gradient: clear top, heavy bottom for text legibility */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to bottom, rgba(8,8,8,0) 30%, rgba(8,8,8,0.82) 72%, rgba(8,8,8,0.98) 100%)',
+        pointerEvents: 'none',
+      }} />
+      {/* Overlay content in bottom portion */}
+      <div style={{
+        position: 'absolute',
+        bottom: 0, left: 0, right: 0,
+        padding: '20px 20px 22px',
+      }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function StepIntro({ onNext }: { onNext: () => void }) {
   return (
     <div>
-      <StepHeading
-        title="Welcome to The Last Firm"
-        body="A world built on loyalty, territory, and quiet violence. Families run districts, operate businesses, and wage wars through power scores — not words."
-      />
+      <HeroImagePanel src={OB_IMG.world}>
+        <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#cc3333', marginBottom: '8px' }}>
+          The Last Firm
+        </div>
+        <div style={{ fontSize: '24px', fontWeight: '900', color: '#f0ece4', lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: '8px' }}>
+          Old money.<br />New crime.<br />Quiet power.
+        </div>
+        <div style={{ fontSize: '11px', color: 'rgba(200,188,168,0.7)', lineHeight: 1.55 }}>
+          Families run districts. Power is held in silence.
+        </div>
+      </HeroImagePanel>
+
       <div style={{ fontSize: '12px', color: '#777', lineHeight: '1.7', marginBottom: '24px' }}>
-        You start as nobody. You can join a family and rise through the ranks, build your own, or stay independent and work contracts.
+        A world built on loyalty, territory, and quiet violence.
+        Families run districts, operate businesses, and wage wars through power scores — not words.
+        <br /><br />
+        You start as nobody. You can join a family and rise through the ranks,
+        build your own, or stay independent and work contracts.
         <br /><br />
         <span style={{ color: '#cc9900', fontStyle: 'italic' }}>
           The streets do not care about your intentions. Only your results.
         </span>
       </div>
+
       <CTA label="Enter the World →" onClick={onNext} />
     </div>
   );
@@ -218,42 +307,104 @@ function ArchetypeDetailPanel({
   const isHitman  = arch.solo_only;
   const isRunner  = arch.type === 'RUNNER';
   const accent    = isHitman ? '#818cf8' : isRunner ? '#4a9a4a' : '#cc3333';
+  const heroImg   = getArchImage(arch.type);
 
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 80,
       display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-      background: 'rgba(0,0,0,0.85)',
+      background: 'rgba(0,0,0,0.9)',
     }}>
       <div style={{
         width: '100%', maxWidth: '580px',
-        background: '#0e0e14',
+        background: '#0a0908',
         borderTop: `2px solid ${accent}`,
         borderRadius: '12px 12px 0 0',
-        maxHeight: '90vh', overflowY: 'auto',
-        padding: '24px 20px 32px',
+        maxHeight: '92vh', overflowY: 'auto',
       }}>
 
-        {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
-          <div>
-            {isHitman && (
-              <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.1em', color: accent, textTransform: 'uppercase', marginBottom: '6px' }}>
-                Solo Path — Cannot join families
+        {/* Hero image — top of sheet */}
+        {heroImg && (
+          <div style={{
+            position: 'relative',
+            width: '100%',
+            height: '240px',
+            overflow: 'hidden',
+            borderRadius: '10px 10px 0 0',
+          }}>
+            <img
+              src={heroImg}
+              alt={arch.name}
+              style={{
+                width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center top',
+                display: 'block',
+              }}
+              onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
+            />
+            {/* Gradient overlay on image */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(10,9,8,0.95) 100%)',
+              pointerEvents: 'none',
+            }} />
+            {/* Close button in top-right of image */}
+            <button
+              onClick={onBack}
+              style={{
+                position: 'absolute', top: '12px', right: '12px',
+                background: 'rgba(0,0,0,0.65)', border: '1px solid rgba(255,255,255,0.12)',
+                color: '#aaa', cursor: 'pointer', padding: '5px 10px',
+                fontSize: '13px', borderRadius: '4px',
+                backdropFilter: 'blur(4px)',
+              }}
+            >✕</button>
+            {/* Archetype label inside image */}
+            <div style={{
+              position: 'absolute', bottom: '16px', left: '20px',
+            }}>
+              {isHitman && (
+                <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.1em', color: accent, textTransform: 'uppercase', marginBottom: '5px' }}>
+                  Solo Path — Cannot join families
+                </div>
+              )}
+              {isRunner && (
+                <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.1em', color: accent, textTransform: 'uppercase', marginBottom: '5px' }}>
+                  Recommended for new players
+                </div>
+              )}
+              <div style={{ fontSize: '28px', fontWeight: '900', color: '#f0ece4', lineHeight: 1, letterSpacing: '-0.02em' }}>
+                {arch.name}
               </div>
-            )}
-            {isRunner && (
-              <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.1em', color: accent, textTransform: 'uppercase', marginBottom: '6px' }}>
-                Recommended for new players
-              </div>
-            )}
-            <div style={{ fontSize: '26px', fontWeight: '900', color: '#e8e8e8', lineHeight: 1.1 }}>
-              {arch.name}
+              <div style={{ fontSize: '11px', color: 'rgba(200,180,150,0.6)', fontStyle: 'italic', marginTop: '3px' }}>{arch.role}</div>
             </div>
-            <div style={{ fontSize: '12px', color: '#555', fontStyle: 'italic', marginTop: '4px' }}>{arch.role}</div>
           </div>
-          <button onClick={onBack} style={{ background: 'none', border: '1px solid #222', color: '#555', cursor: 'pointer', padding: '4px 8px', fontSize: '13px', borderRadius: '4px', flexShrink: 0, marginLeft: '12px' }}>✕</button>
-        </div>
+        )}
+
+        <div style={{ padding: '20px 20px 32px' }}>
+
+        {/* If no hero image, show text header */}
+        {!heroImg && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+            <div>
+              {isHitman && (
+                <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.1em', color: accent, textTransform: 'uppercase', marginBottom: '6px' }}>
+                  Solo Path — Cannot join families
+                </div>
+              )}
+              {isRunner && (
+                <div style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '0.1em', color: accent, textTransform: 'uppercase', marginBottom: '6px' }}>
+                  Recommended for new players
+                </div>
+              )}
+              <div style={{ fontSize: '26px', fontWeight: '900', color: '#e8e8e8', lineHeight: 1.1 }}>
+                {arch.name}
+              </div>
+              <div style={{ fontSize: '12px', color: '#555', fontStyle: 'italic', marginTop: '4px' }}>{arch.role}</div>
+            </div>
+            <button onClick={onBack} style={{ background: 'none', border: '1px solid #222', color: '#555', cursor: 'pointer', padding: '4px 8px', fontSize: '13px', borderRadius: '4px', flexShrink: 0, marginLeft: '12px' }}>✕</button>
+          </div>
+        )}
 
         <div style={{ fontSize: '14px', fontWeight: '600', color: accent, margin: '14px 0 12px', lineHeight: 1.4 }}>
           "{arch.tagline}"
@@ -319,6 +470,8 @@ function ArchetypeDetailPanel({
             ← See other archetypes
           </button>
         </div>
+
+        </div>{/* end inner padding div */}
       </div>
     </div>
   );
@@ -344,7 +497,8 @@ function StepArchetypeChoice({ onNext }: { onNext: (archetype: string) => void }
     const isConfirmed = confirmed === arch.type;
     const isRunner    = arch.type === 'RUNNER';
     const isHitman    = arch.solo_only;
-    const accent      = isHitman ? '#818cf8' : isRunner ? '#4a9a4a' : '#1a1a1a';
+    const accentBorder = isConfirmed ? '#3a8a3a' : isHitman ? '#2a2a5a' : isRunner ? '#2a4a2a' : '#1a1a1a';
+    const heroImg      = getArchImage(arch.type);
 
     return (
       <div
@@ -353,35 +507,92 @@ function StepArchetypeChoice({ onNext }: { onNext: (archetype: string) => void }
         data-testid={`archetype-card-${arch.type.toLowerCase()}`}
         style={{
           gridColumn: fullWidth ? '1 / -1' : undefined,
-          padding: '12px 14px',
           background: isConfirmed ? '#0a1a0a' : '#0e0e0e',
-          border: `1px solid ${isConfirmed ? '#3a8a3a' : accent}`,
+          border: `1px solid ${accentBorder}`,
           borderRadius: '6px',
           cursor: 'pointer',
           position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        {isRunner && !isConfirmed && (
-          <div style={{ position: 'absolute', top: '6px', right: '8px', fontSize: '9px', background: '#1a3a1a', border: '1px solid #2a5a2a', color: '#4a9a4a', padding: '2px 6px', borderRadius: '3px', fontWeight: '700', letterSpacing: '0.06em' }}>
-            RECOMMENDED
+        {/* Image header for cards that have a hero image */}
+        {heroImg ? (
+          <div style={{
+            position: 'relative',
+            height: fullWidth ? '140px' : '100px',
+            overflow: 'hidden',
+          }}>
+            <img
+              src={heroImg}
+              alt={arch.name}
+              loading="lazy"
+              style={{
+                width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center top',
+                display: 'block',
+                filter: isConfirmed ? 'none' : 'brightness(0.75)',
+                transition: 'filter 0.2s',
+              }}
+              onError={e => { (e.target as HTMLImageElement).parentElement!.style.height = '0'; }}
+            />
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0) 20%, rgba(14,14,14,0.92) 100%)',
+              pointerEvents: 'none',
+            }} />
+            {/* Archetype name over image */}
+            <div style={{
+              position: 'absolute', bottom: '8px', left: '12px',
+              right: fullWidth ? '80px' : '28px',
+              display: 'flex', alignItems: 'center', gap: '7px',
+            }}>
+              <span style={{ fontSize: '14px', fontWeight: '900', color: isConfirmed ? '#5ab85a' : '#f0ece4', letterSpacing: '-0.01em' }}>
+                {arch.name}
+                {isConfirmed && <span style={{ color: '#5ab85a', fontSize: '12px', marginLeft: '6px' }}>✓</span>}
+              </span>
+            </div>
+            {/* Badges */}
+            {isRunner && !isConfirmed && (
+              <div style={{ position: 'absolute', top: '7px', right: '8px', fontSize: '8px', background: 'rgba(26,58,26,0.9)', border: '1px solid #2a5a2a', color: '#4a9a4a', padding: '2px 6px', borderRadius: '3px', fontWeight: '700', letterSpacing: '0.06em', backdropFilter: 'blur(4px)' }}>
+                RECOMMENDED
+              </div>
+            )}
+            {isHitman && !isConfirmed && (
+              <div style={{ position: 'absolute', top: '7px', right: '8px', fontSize: '8px', background: 'rgba(20,20,58,0.9)', border: '1px solid #2a2a7a', color: '#818cf8', padding: '2px 6px', borderRadius: '3px', fontWeight: '700', letterSpacing: '0.06em', backdropFilter: 'blur(4px)' }}>
+                SOLO PATH
+              </div>
+            )}
+            {/* Chevron top-right corner */}
+            <div style={{ position: 'absolute', top: '8px', right: isRunner || isHitman ? '74px' : '8px', color: '#555', fontSize: '14px' }}>›</div>
+          </div>
+        ) : (
+          /* No image fallback — text only, original style */
+          <div style={{ padding: '12px 14px' }}>
+            {isRunner && !isConfirmed && (
+              <div style={{ position: 'absolute', top: '6px', right: '8px', fontSize: '9px', background: '#1a3a1a', border: '1px solid #2a5a2a', color: '#4a9a4a', padding: '2px 6px', borderRadius: '3px', fontWeight: '700', letterSpacing: '0.06em' }}>
+                RECOMMENDED
+              </div>
+            )}
+            {isHitman && !isConfirmed && (
+              <div style={{ position: 'absolute', top: '6px', right: '8px', fontSize: '9px', background: '#14143a', border: '1px solid #2a2a7a', color: '#818cf8', padding: '2px 6px', borderRadius: '3px', fontWeight: '700', letterSpacing: '0.06em' }}>
+                SOLO PATH
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ fontWeight: '700', fontSize: '13px', color: isConfirmed ? '#5ab85a' : '#e0e0e0', marginBottom: '4px', paddingRight: fullWidth ? '80px' : 0 }}>
+                {arch.name}
+                {isConfirmed && <span style={{ color: '#5ab85a', fontSize: '11px', marginLeft: '8px' }}>✓</span>}
+              </div>
+              <div style={{ color: '#333', fontSize: '14px' }}>›</div>
+            </div>
           </div>
         )}
-        {isHitman && !isConfirmed && (
-          <div style={{ position: 'absolute', top: '6px', right: '8px', fontSize: '9px', background: '#14143a', border: '1px solid #2a2a7a', color: '#818cf8', padding: '2px 6px', borderRadius: '3px', fontWeight: '700', letterSpacing: '0.06em' }}>
-            SOLO PATH
-          </div>
-        )}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontWeight: '700', fontSize: '13px', color: isConfirmed ? '#5ab85a' : '#e0e0e0', marginBottom: '4px', paddingRight: fullWidth ? '80px' : 0 }}>
-            {arch.name}
-            {isConfirmed && <span style={{ color: '#5ab85a', fontSize: '11px', marginLeft: '8px' }}>✓</span>}
-          </div>
-          <div style={{ color: '#333', fontSize: '14px' }}>›</div>
+
+        {/* Card body below image */}
+        <div style={{ padding: '8px 12px 12px' }}>
+          <div style={{ fontSize: '10px', color: '#555', lineHeight: '1.5' }}>{arch.description.slice(0, 80)}…</div>
+          <div style={{ fontSize: '9px', color: '#3a3a3a', marginTop: '5px', letterSpacing: '0.04em' }}>{arch.playstyle}</div>
         </div>
-        <div style={{ fontSize: '10px', color: '#555', lineHeight: '1.5' }}>{arch.description.slice(0, 72)}…</div>
-        {!fullWidth && (
-          <div style={{ fontSize: '9px', color: '#444', marginTop: '6px', letterSpacing: '0.04em' }}>{arch.playstyle}</div>
-        )}
       </div>
     );
   };
