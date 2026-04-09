@@ -1,170 +1,141 @@
 # The Last Firm — QA Notes
-## Jobs System: Cards · States · Sort / Filter / Recommendations
+## v1.2: Onboarding + Archetype Visuals
 **Branch:** `feature/connect-supabase`
-**Date:** 2026-04-08
-**Build:** Clean (`npm run build` — 0 errors, 0 TS errors in jobs files)
+**Date:** 2026-04-09
+**Build:** Clean (`npm run build` — 0 errors, 0 new TS errors)
 
 ---
 
-## Feature Checklist
+## What Was Added
 
-### Card States
+### Assets
+- `/assets/onboarding/` — 6 painterly editorial images (9:16 format)
+  - `TLF_ONBOARDING_01_WORLD.png` — two suited figures at penthouse windows, city night
+  - `TLF_ONBOARDING_02_IDENTITY.png` — back-of-figure at private club entrance, rain
+  - `TLF_ONBOARDING_03_ARCHETYPE.png` — three distinct figures in club corridor
+  - `TLF_ONBOARDING_04_FIRSTJOB.png` — two figures at cafe table with sealed envelope
+  - `TLF_ONBOARDING_05_FAMILY.png` — five figures at candlelit round table
+  - `TLF_ONBOARDING_06_CITY.png` — single figure at floor-to-ceiling glass, city at dawn
 
-| Item | Status | Notes |
-|---|---|---|
-| Ready state — full image, active CTA, risk strip visible | ✅ PASS | Verified across multiple job categories |
-| Locked state — grayscale image, lock panel with reason, dimmed title/reward | ✅ PASS | Boss Required, Capo Required, War Only all render correctly |
-| Cooldown state — dimmed image, arc progress panel, timer displayed | ✅ PASS | `formatCooldown()` working; "avail. HH:MM" shown |
-| Near-ready state — amber arc, "Almost Ready" label, pulsing badge | ✅ PASS | Triggered at final 20% of cooldown |
-| Success outcome — result image, narrative text, payout/heat/XP stats | ✅ PASS | Tested live: "Nobody short-changed you and nobody made a scene" |
-| Failure outcome — failure image, narrative text, no payout | ✅ PASS | Confirmed via `resolveJob()` |
-| Busted / arrested outcome — orange label, jail warning panel | ✅ PASS | Jail warning renders; `hasBustedImage=false` falls back to failure image |
+- `/assets/archetypes/` — 3 archetype hero images (9:16 format)
+  - `TLF_ARCHETYPE_EARNER.png` — suited figure at private club table, city night view
+  - `TLF_ARCHETYPE_MUSCLE.png` — large figure in garage doorway, physical authority
+  - `TLF_ARCHETYPE_HITMAN.png` — figure in back of parked car, watching lit entrance in rain
 
-### Risk Strip
-
-| Item | Status | Notes |
-|---|---|---|
-| Heat risk label — Minimal/Low/Medium/High/Critical with color | ✅ PASS | `RISK_LEVEL_LABEL` and `RISK_LEVEL_COLOR` applied |
-| Arrest risk label — same 5 tiers | ✅ PASS | Uses `jailRiskLabel(jail_chance_base)` |
-| Mode indicator — Solo / Crew / Solo/Crew with icon | ✅ PASS | Icons correct for each mode type |
-| Hitman eligible indicator | ✅ PASS | Shows "Hitman eligible" in blue when `hitman_eligible: true` |
-| High/Critical risk corner warning in image | ✅ PASS | Shows for composite ≥ 3 when card is ready |
-| Risk strip background tint scales with composite | ✅ PASS | 0=transparent → 4=red tint |
-
-### Sort Options
-
-| Sort | Status | Notes |
-|---|---|---|
-| Recommended (default) | ✅ PASS | Composite score: ready+archetype fit+payout+risk |
-| Ready Now | ✅ PASS | Ready→cooling→locked, within group by payout desc |
-| Highest Payout | ✅ PASS | Uses `getScaledRewardBand()` with rank multiplier |
-| Lowest Risk | ✅ PASS | Ready first, then `jail_chance_base` asc |
-| Shortest Cooldown | ✅ PASS | Ready first, then remaining seconds asc |
-| Best Progression | ✅ PASS | Ready first, then tier desc |
-| Category A–Z | ✅ PASS | Alphabetical by `category` field |
-
-### Filters
-
-| Filter | Status | Notes |
-|---|---|---|
-| Availability — Ready / Cooling / Locked | ✅ PASS | Correctly gates by `canStartJob` + `isOnCooldown` |
-| Risk — Low / Medium / High | ✅ PASS | LOW maps VERY_LOW+LOW; HIGH maps HIGH+EXTREME |
-| Category | ✅ PASS | All 13 categories appear as chips |
-| Mode — Solo / Solo or Crew / Crew | ✅ PASS | Exact match on `job.mode` |
-| Active filter chips — dismissible, "Clear all" | ✅ PASS | Each chip clears its own axis |
-| Reset button | ✅ PASS | Returns to `DEFAULT_FILTERS` |
-| Result count shown when filters active | ✅ PASS | "N jobs match" label appears |
-
-### Recommended Jobs
-
-| Item | Status | Notes |
-|---|---|---|
-| Recommended section visible on default tab | ✅ PASS | Top 4 jobs with scores 0–100 |
-| "Best match" gold treatment on #1 | ✅ PASS | `isPrimary={i === 0}` |
-| Reason pills visible below each card | ✅ PASS | 1–3 pills: "Ready now", "Good fit for Schemer", "Low heat risk" |
-| Archetype + heat context label | ✅ PASS | Shows "Personalized for Schemer archetype" |
-| Heat warning when player heat > 40 | ✅ PASS | "Heat 22 — low-risk jobs prioritized" shown |
-| Empty state when no recommendations | ✅ PASS | "No recommended jobs available right now" message |
-
-### Mobile Filter Tray
-
-| Item | Status | Notes |
-|---|---|---|
-| Filter button opens bottom sheet | ✅ PASS | Uses existing `bottom-sheet open` class |
-| Tray has sticky header with active count badge | ✅ PASS | Sticky `position: sticky; top: 0` |
-| All 4 filter sections visible and scrollable | ✅ PASS | Availability, Risk, Mode, Category |
-| "Show Results" CTA closes tray | ✅ PASS | `onClose()` called on click |
-| Reset button in tray header | ✅ PASS | Resets to `DEFAULT_FILTERS` |
-| Tray scrollable on small screens | ✅ PASS | `maxHeight: 80vh; overflowY: auto` |
-
-### Status Bar
-
-| Item | Status | Notes |
-|---|---|---|
-| Shows Ready / Cooling / Locked counts | ✅ PASS | 30/0/25 for unaffiliated player |
-| Ready pill clickable — applies "READY" filter | ✅ PASS | Switches to All Jobs tab + applies filter |
-| Counts correct per player role | ✅ PASS | Verified with Soldier (more unlocked) |
-
-### Empty State
-
-| Item | Status | Notes |
-|---|---|---|
-| Empty state shown when filters produce 0 results | ✅ PASS | "No jobs match" with reset button |
-| Recommended empty state when 0 accessible | ✅ PASS | "No recommended jobs available" message |
-
-### Images
-
-| Item | Status | Notes |
-|---|---|---|
-| All 55 job base images present | ✅ PASS | `ls assets/jobs/base/ = 55` |
-| All 55 success images present | ✅ PASS | `ls assets/jobs/success/ = 55` |
-| All 55 failure images present | ✅ PASS | `ls assets/jobs/failure/ = 55` |
-| All 55 narrative entries mapped to job IDs | ✅ PASS | `comm` check: 0 missing |
-| Broken image fallback (`onError`) | ✅ PASS | `parentElement.style.display = 'none'` |
-| Busted image variant | ⚠ NOTE | `has_busted_image: false` for all jobs; fallback to failure image works |
-
-### Lock Reason Examples
-
-| Reason Code | Job Example | Status |
-|---|---|---|
-| `RANK_TOO_LOW` | "Establish a New Racket Empire" (Boss Required) | ✅ PASS |
-| `RANK_TOO_LOW` | "Turn a Police Commander" (Capo Required) | ✅ PASS |
-| `WAR_CONTEXT_ONLY` | "Seize a Rival Territory" (War Only) | ✅ PASS |
-
-### Desktop Layout
-
-| Item | Status | Notes |
-|---|---|---|
-| Sort bar scrollable without wrapping | ✅ PASS | `overflowX: auto; scrollbarWidth: none` |
-| Filter tray opens as centered dialog | ✅ PASS | `bottom-sheet` class centers on desktop |
-| Card grid single-column (no grid breaking) | ✅ PASS | Cards are full-width within section |
-| No text overflow in card titles or reward labels | ✅ PASS | `flexShrink: 0` on reward, `lineHeight: 1.25` on title |
-
-### Mobile Layout (375–390px)
-
-| Item | Status | Notes |
-|---|---|---|
-| Status bar wraps gracefully | ✅ PASS | `flexWrap: wrap` on status bar |
-| Sort chips scrollable horizontally | ✅ PASS | `overflow-x: auto` no wrap |
-| Filter tray appears as bottom sheet | ✅ PASS | Full-width bottom-anchored sheet |
-| CTAs meet 44px min-height touch target | ✅ PASS | `minHeight: 44px` on all CTA buttons |
-| Card images 120px height maintained | ✅ PASS | Fixed height, `objectFit: cover` |
+### Code Changes (`client/src/pages/Onboarding.tsx`)
+- Added `OB_IMG` constant map for onboarding image paths
+- Added `ARCH_IMG` constant map for archetype image paths
+- Added `getArchImage(type)` helper — returns hero image path or null
+- Added `HeroImagePanel` component — reusable full-bleed image + gradient overlay + content slot
+- Upgraded `StepIntro` — now shows `TLF_ONBOARDING_01_WORLD` as full-bleed hero with headline overlay
+- Upgraded `archetypeCard` function — adds image thumbnail (140px full-width, 100px half-width) with gradient + name overlay; graceful fallback for archetypes without images (RUNNER, SHOOTER, SCHEMER, RACKETEER)
+- Upgraded `ArchetypeDetailPanel` — hero image (240px) at top of bottom sheet with gradient overlay, name/role overlaid in image; graceful fallback if no image
 
 ---
 
-## Known Issues / Follow-Up
+## QA Checklist
 
-| ID | Issue | Severity | Action |
-|---|---|---|---|
-| QA-01 | Busted image variant not generated yet — all jobs use failure fallback | Low | Generate busted variants in a future wave |
-| QA-02 | Recommendation score not tuned per-player (uses static archetype fit table) | Low | Add per-player stats weighting when real Supabase data is live |
-| QA-03 | `injury_risk` field not modeled on `JobDefinition` | Low | Future model extension |
-| QA-04 | XP yield proxied by `tier` field — not an explicit `xp_base` | Low | Add `xp_base` to `JobDefinition` in a future data model pass |
-| QA-05 | Location / turf / item-gated lock reasons (placeholder codes exist) — not yet wired to data | Low | Future feature — lock codes stubbed in `shared/jobs.ts` |
+### INTRO Step
+
+| Item | Status | Notes |
+|---|---|---|
+| Hero image loads on mobile (390px) | ✅ PASS | Image fills ~62vh, gradient overlay readable |
+| Hero image loads on desktop (1280px) | ✅ PASS | Capped at 480px, centered in content column |
+| Headline text legible over image | ✅ PASS | Strong gradient bottom-up, white text |
+| "THE LAST FIRM" red eyebrow label | ✅ PASS | Visible in image overlay |
+| Supporting copy + gold italic quote | ✅ PASS | Renders below image panel |
+| "Enter the World →" CTA | ✅ PASS | Full-width red button |
+| Smear-face rule | ✅ PASS | Faces are painterly smears, no readable features |
+| onError fallback (no broken image) | ✅ PASS | `display: none` on error |
+
+### ARCHETYPE_CHOICE Step — Card Grid
+
+| Item | Status | Notes |
+|---|---|---|
+| Earner card shows hero image thumbnail | ✅ PASS | 100px half-width image header |
+| Muscle card shows hero image thumbnail | ✅ PASS | 100px half-width image header |
+| Hitman card shows hero image thumbnail | ✅ PASS | 140px full-width image header (solo, full-width) |
+| Runner card — no image, text fallback | ✅ PASS | Falls through to original text-only style |
+| Shooter/Schemer/Racketeer — text fallback | ✅ PASS | Original text style preserved |
+| Card image brightness reduced when unselected | ✅ PASS | `brightness(0.75)` applied |
+| Card image at full brightness when confirmed | ✅ PASS | `filter: none` on confirmed state |
+| Name overlay on card image | ✅ PASS | Bottom-left of image with gradient |
+| RECOMMENDED/SOLO PATH badges in image | ✅ PASS | Top-right with backdrop blur |
+| Card tappable → opens detail panel | ✅ PASS | Verified for Earner, Hitman |
+
+### ARCHETYPE_CHOICE Step — Detail Panel
+
+| Item | Status | Notes |
+|---|---|---|
+| Earner panel — hero image at top | ✅ PASS | 240px, object-position: center top |
+| Muscle panel — hero image at top | ✅ PASS | Garage/physical authority image |
+| Hitman panel — hero image at top | ✅ PASS | Car interior / watching entrance |
+| Runner panel — no image, text header | ✅ PASS | Original header preserved |
+| Name + role overlaid in image gradient | ✅ PASS | Bottom-left of image |
+| SOLO PATH / RECOMMENDED label in image | ✅ PASS | Hitman shows Solo Path in accent color |
+| Close ✕ button in image top-right | ✅ PASS | Backdrop blur, semi-transparent bg |
+| Tagline in accent color | ✅ PASS | Red/blue/green per archetype |
+| Strengths / Tradeoffs / Best at | ✅ PASS | All three sections render |
+| "Choose [Archetype]" CTA | ✅ PASS | Full-width, accent color |
+| Scroll works on tall content | ✅ PASS | `overflowY: auto` on panel |
+| Smear-face rule | ✅ PASS | All three archetype images compliant |
+
+### Mobile Layout (390px)
+
+| Item | Status | Notes |
+|---|---|---|
+| Intro hero image fills screen naturally | ✅ PASS | `min(62vh, 480px)` works correctly |
+| Archetype cards render in grid | ✅ PASS | 2-col, images display at correct height |
+| Detail panel full-width bottom sheet | ✅ PASS | Reaches edge of screen |
+| Text readable without zoom | ✅ PASS | All body text ≥10px |
+
+### Desktop Layout (1280px)
+
+| Item | Status | Notes |
+|---|---|---|
+| Content column max-width 560px centered | ✅ PASS | `maxWidth: 560px; margin: 0 auto` in shell |
+| Hero image capped at 480px height | ✅ PASS | Does not stretch excessively on large screens |
+| Detail panel max-width 580px centered | ✅ PASS | Bottom-sheet anchored correctly |
+
+### Art Direction
+
+| Item | Status | Notes |
+|---|---|---|
+| Painterly editorial style consistent with job cards | ✅ PASS | Same oil-on-canvas impressionist approach |
+| Luxury-crime tone | ✅ PASS | All 9 images are premium/moody |
+| No readable facial features | ✅ PASS | Back-of-head, hat shadow, painterly smear |
+| Cinematic compositions | ✅ PASS | Foreground/midground/background depth |
+| Same world feel as jobs | ✅ PASS | Consistent with established visual system |
+
+---
+
+## Known Issues (Non-Blocking)
+
+| ID | Issue | Severity |
+|---|---|---|
+| QA-OB-01 | RUNNER, SHOOTER, SCHEMER, RACKETEER have no hero images — text-only fallback active | Low — these archetypes still work correctly |
+| QA-OB-02 | Onboarding images 2–6 not yet wired to specific steps (only #1 used in INTRO) | Low — future enhancement |
+| QA-OB-03 | Pre-existing TS error in analyticsEngine call (line 1216 Analytics.onboardingCompleted) — not introduced by this PR | Low — pre-existing |
 
 ---
 
 ## Pre-Deploy Checklist
 
-- [x] `npm run build` — clean, no errors
-- [x] `npx tsc --noEmit` — 0 errors in jobs files
-- [x] No `console.log` in jobs files
-- [x] No TODO/FIXME/HACK comments in jobs files
-- [x] All 55 job IDs have narrative entries
-- [x] All 55 art_keys have base/success/failure images
-- [x] `PLACEHOLDER_NARRATIVE` fallback verified safe
-- [x] Filter tray uses existing `bottom-sheet` CSS class
-- [x] All new CTAs meet 44px min-height
-- [x] No localStorage usage in new code paths
-- [x] `DEFAULT_FILTERS` reset path tested
-- [x] Empty state renders without crashing
-- [x] `getLockReason()` and `getRiskProfile()` return sensible values for all job types
-- [x] `getRecommendedJobs()` handles empty job list gracefully
-- [x] Sort functions don't mutate original array (use `[...jobs]` spread)
+- [x] `npm run build` — clean
+- [x] No new TS errors introduced
+- [x] No console.log in changed files
+- [x] Hero image loads on mobile + desktop
+- [x] Archetype cards show images for Earner/Muscle/Hitman
+- [x] Text fallback works for archetypes without images
+- [x] Detail panel hero image loads correctly (Earner, Hitman verified)
+- [x] `onError` handler prevents broken image UI
+- [x] Smear-face rule verified in all 9 images
+- [x] Build includes new asset directories
 
 ---
 
-## Sign-off
+## Recommended Follow-Up (future)
 
-All blocking items: **CLEAR**
-Safe to merge to main: **YES**
+1. Add hero images for RUNNER, SHOOTER, SCHEMER, RACKETEER
+2. Wire onboarding images 2–6 to their respective onboarding steps
+3. Consider a swipeable full-screen intro carousel using images 1–3 before the INTRO step
